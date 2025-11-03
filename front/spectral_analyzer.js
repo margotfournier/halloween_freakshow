@@ -20,9 +20,7 @@ class SpectralAnalyzer {
         // DOM elements
         this.recordBtn = document.getElementById('recordBtn');
         this.stopBtn = document.getElementById('stopBtn');
-        this.audioFileInput = document.getElementById('audioFile');
         this.analyzeBtn = document.getElementById('analyzeBtn');
-        this.fileName = document.getElementById('fileName');
         this.indicator = document.getElementById('recordingIndicator');
         this.indicatorText = this.indicator.querySelector('.indicator-text');
         this.waveformCanvas = document.getElementById('waveformCanvas');
@@ -43,7 +41,6 @@ class SpectralAnalyzer {
         // Event listeners
         this.recordBtn.addEventListener('click', () => this.startRecording());
         this.stopBtn.addEventListener('click', () => this.stopRecording());
-        this.audioFileInput.addEventListener('change', (e) => this.handleFileUpload(e));
         this.analyzeBtn.addEventListener('click', () => this.analyzeAudio());
 
         this.updateMachineStatus('Machine au repos');
@@ -165,20 +162,6 @@ class SpectralAnalyzer {
             if (this.animationId) {
                 cancelAnimationFrame(this.animationId);
             }
-        }
-    }
-
-    // ================================================
-    // FILE UPLOAD
-    // ================================================
-
-    handleFileUpload(event) {
-        const file = event.target.files[0];
-        if (file) {
-            this.audioBlob = file;
-            this.fileName.textContent = `Fichier chargé: ${file.name}`;
-            this.analyzeBtn.disabled = false;
-            this.updateMachineStatus('Fichier chargé - Prêt à analyser');
         }
     }
 
