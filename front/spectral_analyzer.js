@@ -16,34 +16,59 @@ class SpectralAnalyzer {
         this.analyser = null;
         this.dataArray = null;
         this.animationId = null;
+        this.gaugeAnimationId = null;
 
-        // DOM elements
-        this.recordBtn = document.getElementById('recordBtn');
-        this.stopBtn = document.getElementById('stopBtn');
-        this.analyzeBtn = document.getElementById('analyzeBtn');
-        this.indicator = document.getElementById('recordingIndicator');
-        this.indicatorText = this.indicator.querySelector('.indicator-text');
-        this.waveformCanvas = document.getElementById('waveformCanvas');
+        // DOM elements - Vintage Dashboard
+        this.mainToggle = document.getElementById('mainToggle');
+        this.analyzeKnob = document.getElementById('analyzeKnob');
+        this.statusLight = document.getElementById('statusLight');
+        this.gaugeCanvas = document.getElementById('gaugeCanvas');
         this.spectrogramCanvas = document.getElementById('spectrogramCanvas');
         this.machineStatus = document.getElementById('machineStatus');
 
         // Canvas contexts
-        this.waveCtx = this.waveformCanvas.getContext('2d');
+        this.gaugeCtx = this.gaugeCanvas.getContext('2d');
         this.specCtx = this.spectrogramCanvas.getContext('2d');
 
         // Spectrogram data
         this.spectrogramData = [];
 
+        // Gauge state
+        this.gaugeValue = 0;
+
         this.init();
     }
 
     init() {
-        // Event listeners
-        this.recordBtn.addEventListener('click', () => this.startRecording());
-        this.stopBtn.addEventListener('click', () => this.stopRecording());
-        this.analyzeBtn.addEventListener('click', () => this.analyzeAudio());
+        // Event listeners for vintage controls
+        this.mainToggle.addEventListener('click', () => this.toggleRecording());
+        this.analyzeKnob.addEventListener('click', () => this.handleAnalyze());
 
+        // Initialize gauge
+        this.drawGauge();
         this.updateMachineStatus('Machine au repos');
+    }
+
+    toggleRecording() {
+        if (!this.isRecording) {
+            this.startRecording();
+            this.mainToggle.classList.remove('inactive');
+            this.mainToggle.classList.add('active');
+        } else {
+            this.stopRecording();
+            this.mainToggle.classList.remove('active');
+            this.mainToggle.classList.add('inactive');
+        }
+    }
+
+    handleAnalyze() {
+        if (this.audioBlob && !this.analyzeKnob.classList.contains('active')) {
+            this.analyzeKnob.classList.add('active');
+            this.analyzeAudio();
+            setTimeout(() => {
+                this.analyzeKnob.classList.remove('active');
+            }, 1000);
+        }
     }
 
     // ================================================
@@ -101,7 +126,6 @@ class SpectralAnalyzer {
                 console.log('Enregistrement arrêté. Chunks:', this.audioChunks.length);
                 this.audioBlob = new Blob(this.audioChunks, { type: mimeType });
                 console.log('Taille du blob audio:', this.audioBlob.size, 'bytes');
-                this.analyzeBtn.disabled = false;
                 this.updateMachineStatus('Enregistrement terminé - Prêt à analyser');
                 stream.getTracks().forEach(track => track.stop());
             };
@@ -115,15 +139,12 @@ class SpectralAnalyzer {
             this.isRecording = true;
             console.log('Enregistrement démarré');
 
-            // UI updates
-            this.recordBtn.disabled = true;
-            this.stopBtn.disabled = false;
-            this.recordBtn.classList.add('recording');
-            this.indicatorText.textContent = 'Enregistrement en cours...';
+            // UI updates - Vintage dashboard
+            this.statusLight.classList.add('active');
             this.updateMachineStatus('Enregistrement en cours...');
 
-            // Start waveform visualization
-            this.drawWaveform();
+            // Start gauge visualization
+            this.animateGauge();
 
         } catch (error) {
             console.error('Erreur lors de l\'accès au microphone:', error);
@@ -152,58 +173,87 @@ class SpectralAnalyzer {
             this.mediaRecorder.stop();
             this.isRecording = false;
 
-            // UI updates
-            this.recordBtn.disabled = false;
-            this.stopBtn.disabled = true;
-            this.recordBtn.classList.remove('recording');
-            this.indicatorText.textContent = 'Enregistrement sauvegardé';
+            // UI updates - Vintage dashboard
+            this.statusLight.classList.remove('active');
 
-            // Stop animation
-            if (this.animationId) {
-                cancelAnimationFrame(this.animationId);
+            // Stop gauge animation
+            if (this.gaugeAnimationId) {
+                cancelAnimationFrame(this.gaugeAnimationId);
             }
+
+            // Reset gauge to 0
+            this.gaugeValue = 0;
+            this.drawGauge();
         }
     }
 
     // ================================================
-    // WAVEFORM VISUALIZATION
+    // GAUGE VISUALIZATION
     // ================================================
 
-    drawWaveform() {
+    drawGauge() {
+        const canvas = this.gaugeCanvas;
+        const ctx = this.gaugeCtx;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = 70;
+
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw graduations
+        ctx.strokeStyle = 'rgba(212, 175, 55, 0.6)';
+        ctx.lineWidth = 2;
+        for (let i = 0; i <= 10; i++) {
+            const angle = -Math.PI * 0.75 + (i / 10) * Math.PI * 1.5;
+            const x1 = centerX + Math.cos(angle) * (radius - 10);
+            const y1 = centerY + Math.sin(angle) * (radius - 10);
+            const x2 = centerX + Math.cos(angle) * (radius - 20);
+            const y2 = centerY + Math.sin(angle) * (radius - 20);
+
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+
+        // Draw needle
+        const needleAngle = -Math.PI * 0.75 + (this.gaugeValue / 100) * Math.PI * 1.5;
+        const needleLength = radius - 25;
+
+        ctx.strokeStyle = 'rgba(255, 215, 0, 0.9)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(
+            centerX + Math.cos(needleAngle) * needleLength,
+            centerY + Math.sin(needleAngle) * needleLength
+        );
+        ctx.stroke();
+
+        // Draw center dot
+        ctx.fillStyle = 'rgb(212, 175, 55)';
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 8, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    animateGauge() {
         if (!this.isRecording) return;
 
         this.analyser.getByteTimeDomainData(this.dataArray);
 
-        const width = this.waveformCanvas.width;
-        const height = this.waveformCanvas.height;
-
-        this.waveCtx.fillStyle = '#0f0a08';
-        this.waveCtx.fillRect(0, 0, width, height);
-
-        this.waveCtx.lineWidth = 2;
-        this.waveCtx.strokeStyle = '#d4af37';
-        this.waveCtx.beginPath();
-
-        const sliceWidth = width / this.dataArray.length;
-        let x = 0;
-
+        // Calculate RMS (volume level)
+        let sum = 0;
         for (let i = 0; i < this.dataArray.length; i++) {
-            const v = this.dataArray[i] / 128.0;
-            const y = (v * height) / 2;
-
-            if (i === 0) {
-                this.waveCtx.moveTo(x, y);
-            } else {
-                this.waveCtx.lineTo(x, y);
-            }
-
-            x += sliceWidth;
+            const normalized = (this.dataArray[i] - 128) / 128;
+            sum += normalized * normalized;
         }
+        const rms = Math.sqrt(sum / this.dataArray.length);
+        this.gaugeValue = Math.min(100, rms * 300); // Scale to 0-100
 
-        this.waveCtx.lineTo(width, height / 2);
-        this.waveCtx.stroke();
-
-        this.animationId = requestAnimationFrame(() => this.drawWaveform());
+        this.drawGauge();
+        this.gaugeAnimationId = requestAnimationFrame(() => this.animateGauge());
     }
 
     // ================================================
@@ -217,7 +267,6 @@ class SpectralAnalyzer {
         }
 
         this.updateMachineStatus('Analyse en cours...');
-        this.analyzeBtn.disabled = true;
 
         try {
             // Create audio context if not exists
@@ -233,13 +282,11 @@ class SpectralAnalyzer {
             await this.generateSpectrogram();
 
             this.updateMachineStatus('Analyse terminée - Spectre révélé');
-            this.analyzeBtn.disabled = false;
 
         } catch (error) {
             console.error('Erreur lors de l\'analyse:', error);
             alert('Erreur lors de l\'analyse audio: ' + error.message);
             this.updateMachineStatus('Erreur d\'analyse');
-            this.analyzeBtn.disabled = false;
         }
     }
 
