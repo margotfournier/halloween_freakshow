@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyseur Spectral Vintage - Le Grand Cirque</title>
+    <link rel="stylesheet" href="spectral_analyzer.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="circus-header">
+            <div class="ornament-top"></div>
+            <h1 class="circus-title">Le Grand Analyseur Spectral</h1>
+            <p class="circus-subtitle">Machine d'Analyse Sonore · Modèle 1925</p>
+            <div class="ornament-bottom"></div>
+        </header>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <div class="panel-frame">
+                <h2 class="panel-title">Panneau de Contrôle</h2>
+
+                <!-- Recording Section -->
+                <div class="control-section">
+                    <div class="control-group">
+                        <button id="recordBtn" class="vintage-button record-btn">
+                            <span class="btn-icon">●</span>
+                            <span class="btn-text">Enregistrer</span>
+                        </button>
+                        <button id="stopBtn" class="vintage-button stop-btn" disabled>
+                            <span class="btn-icon">■</span>
+                            <span class="btn-text">Arrêter</span>
+                        </button>
+                    </div>
+
+                    <div class="recording-indicator" id="recordingIndicator">
+                        <div class="wave-container">
+                            <canvas id="waveformCanvas" width="300" height="60"></canvas>
+                        </div>
+                        <p class="indicator-text">En attente...</p>
+                    </div>
+                </div>
+
+                <!-- File Upload Section -->
+                <div class="control-section">
+                    <div class="separator">
+                        <span>OU</span>
+                    </div>
+                    <label for="audioFile" class="vintage-button upload-btn">
+                        <span class="btn-icon">↑</span>
+                        <span class="btn-text">Charger un fichier audio</span>
+                    </label>
+                    <input type="file" id="audioFile" accept="audio/*" hidden>
+                    <p class="file-name" id="fileName"></p>
+                </div>
+
+                <!-- Analyze Button -->
+                <div class="control-section">
+                    <button id="analyzeBtn" class="vintage-button analyze-btn" disabled>
+                        <span class="btn-icon">⚙</span>
+                        <span class="btn-text">Analyser le Spectre</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spectrogram Display -->
+        <div class="spectrogram-panel" id="spectrogramPanel">
+            <div class="panel-frame">
+                <h2 class="panel-title">Fenêtre d'Observation Spectrale</h2>
+                <div class="viewing-window">
+                    <div class="axis-label y-axis">Fréquence (Hz)</div>
+                    <div class="axis-label x-axis">Temps (secondes)</div>
+                    <canvas id="spectrogramCanvas"></canvas>
+                    <div class="glass-overlay"></div>
+                </div>
+                <div class="machine-footer">
+                    <div class="gauge">
+                        <div class="gauge-needle"></div>
+                    </div>
+                    <p class="machine-status" id="machineStatus">Machine au repos</p>
+                    <div class="gauge">
+                        <div class="gauge-needle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="circus-footer">
+            <p>Breveté · Société des Machines Acoustiques · Paris MCMXXV</p>
+        </footer>
+    </div>
+
+    <script src="spectral_analyzer.js"></script>
+</body>
+</html>
