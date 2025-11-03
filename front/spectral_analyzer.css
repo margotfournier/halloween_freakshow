@@ -50,7 +50,7 @@ body::before {
     z-index: 1;
 }
 
-/* Rotating circus spotlights */
+/* Rotating circus spotlights - 8 projecteurs wahou */
 body::after {
     content: '';
     position: fixed;
@@ -59,20 +59,83 @@ body::after {
     width: 200%;
     height: 200%;
     background:
-        radial-gradient(ellipse 300px 600px at 15% 30%, rgba(255, 215, 0, 0.12) 0%, transparent 40%),
-        radial-gradient(ellipse 350px 650px at 85% 20%, rgba(220, 20, 60, 0.15) 0%, transparent 40%),
-        radial-gradient(ellipse 320px 620px at 25% 75%, rgba(255, 140, 0, 0.1) 0%, transparent 40%),
-        radial-gradient(ellipse 340px 640px at 75% 80%, rgba(255, 215, 0, 0.08) 0%, transparent 40%),
-        radial-gradient(ellipse 300px 600px at 50% 10%, rgba(255, 105, 180, 0.1) 0%, transparent 40%),
-        radial-gradient(ellipse 330px 630px at 90% 50%, rgba(255, 165, 0, 0.12) 0%, transparent 40%);
-    animation: rotateSpotlights 40s linear infinite;
+        /* Projecteur 1 - Or brillant éclatant */
+        radial-gradient(ellipse 400px 800px at 10% 20%, rgba(255, 215, 0, 0.35) 0%, rgba(255, 215, 0, 0.15) 15%, transparent 40%),
+        /* Projecteur 2 - Rouge intense */
+        radial-gradient(ellipse 420px 850px at 90% 15%, rgba(255, 0, 50, 0.32) 0%, rgba(220, 20, 60, 0.14) 15%, transparent 40%),
+        /* Projecteur 3 - Orange flamboyant */
+        radial-gradient(ellipse 380px 780px at 25% 80%, rgba(255, 140, 0, 0.3) 0%, rgba(255, 100, 0, 0.12) 15%, transparent 40%),
+        /* Projecteur 4 - Rose magenta */
+        radial-gradient(ellipse 400px 820px at 75% 85%, rgba(255, 20, 147, 0.28) 0%, rgba(255, 105, 180, 0.12) 15%, transparent 40%),
+        /* Projecteur 5 - Bleu électrique */
+        radial-gradient(ellipse 360px 750px at 50% 5%, rgba(0, 150, 255, 0.26) 0%, rgba(30, 144, 255, 0.11) 15%, transparent 40%),
+        /* Projecteur 6 - Or cuivré */
+        radial-gradient(ellipse 410px 830px at 95% 50%, rgba(255, 185, 0, 0.3) 0%, rgba(218, 165, 32, 0.13) 15%, transparent 40%),
+        /* Projecteur 7 - Rose corail */
+        radial-gradient(ellipse 370px 770px at 5% 60%, rgba(255, 127, 80, 0.27) 0%, rgba(255, 99, 71, 0.11) 15%, transparent 40%),
+        /* Projecteur 8 - Orange doré */
+        radial-gradient(ellipse 390px 800px at 60% 95%, rgba(255, 165, 0, 0.29) 0%, rgba(255, 140, 0, 0.12) 15%, transparent 40%);
+    animation: rotateSpotlights 45s linear infinite;
     pointer-events: none;
     z-index: 0;
+    mix-blend-mode: screen;
 }
 
 @keyframes rotateSpotlights {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+        opacity: 0.95;
+    }
+    25% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.95;
+    }
+    75% {
+        opacity: 1;
+    }
+    to {
+        transform: rotate(360deg);
+        opacity: 0.95;
+    }
+}
+
+/* Contre-rotation pour effet cirque dynamique */
+.container::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background:
+        /* Contre-projecteur 1 - Or rose */
+        radial-gradient(ellipse 450px 900px at 35% 35%, rgba(255, 215, 0, 0.15) 0%, rgba(255, 185, 120, 0.08) 12%, transparent 35%),
+        /* Contre-projecteur 2 - Rouge magenta */
+        radial-gradient(ellipse 480px 950px at 65% 65%, rgba(255, 0, 100, 0.14) 0%, rgba(220, 20, 100, 0.07) 12%, transparent 35%),
+        /* Contre-projecteur 3 - Bleu cyan */
+        radial-gradient(ellipse 420px 850px at 50% 15%, rgba(0, 191, 255, 0.12) 0%, rgba(30, 180, 255, 0.06) 12%, transparent 35%),
+        /* Contre-projecteur 4 - Orange vif */
+        radial-gradient(ellipse 440px 880px at 15% 75%, rgba(255, 120, 0, 0.13) 0%, rgba(255, 140, 50, 0.07) 12%, transparent 35%);
+    animation: rotateSpotlightsReverse 60s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+    mix-blend-mode: screen;
+}
+
+@keyframes rotateSpotlightsReverse {
+    from {
+        transform: rotate(360deg);
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 0.9;
+    }
+    to {
+        transform: rotate(0deg);
+        opacity: 0.8;
+    }
 }
 
 .container {
