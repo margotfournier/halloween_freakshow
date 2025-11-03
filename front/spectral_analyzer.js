@@ -503,9 +503,157 @@ class SpectralAnalyzer {
 }
 
 // ================================================
+// SCROLL EFFECTS WAHOU
+// ================================================
+
+class ScrollEffects {
+    constructor() {
+        this.lastScrollY = window.scrollY;
+        this.scrollTimeout = null;
+        this.particles = [];
+
+        this.init();
+    }
+
+    init() {
+        // Créer l'élément burst
+        this.burstElement = document.createElement('div');
+        this.burstElement.className = 'scroll-burst';
+        document.body.appendChild(this.burstElement);
+
+        // Intersection Observer pour les éléments qui apparaissent
+        this.setupIntersectionObserver();
+
+        // Écouter le scroll
+        window.addEventListener('scroll', () => this.handleScroll());
+
+        // Initialiser - rendre visible les éléments déjà visibles
+        this.checkVisibleElements();
+    }
+
+    setupIntersectionObserver() {
+        const options = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        this.observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    this.createScrollBurst();
+                    this.createParticles();
+                }
+            });
+        }, options);
+
+        // Observer les panneaux
+        document.querySelectorAll('.control-panel, .spectrogram-panel').forEach(panel => {
+            this.observer.observe(panel);
+        });
+    }
+
+    checkVisibleElements() {
+        // Rendre visible les éléments déjà dans le viewport au chargement
+        const panels = document.querySelectorAll('.control-panel, .spectrogram-panel');
+        panels.forEach(panel => {
+            const rect = panel.getBoundingClientRect();
+            if (rect.top < window.innerHeight && rect.bottom > 0) {
+                panel.classList.add('visible');
+            }
+        });
+    }
+
+    handleScroll() {
+        const currentScrollY = window.scrollY;
+        const scrollDelta = Math.abs(currentScrollY - this.lastScrollY);
+
+        // Ajouter classe scrolling au body
+        document.body.classList.add('scrolling');
+
+        // Effet glow sur les panels visibles
+        if (scrollDelta > 5) {
+            this.applyScrollGlow();
+        }
+
+        // Retirer la classe après 200ms d'inactivité
+        clearTimeout(this.scrollTimeout);
+        this.scrollTimeout = setTimeout(() => {
+            document.body.classList.remove('scrolling');
+            this.removeScrollGlow();
+        }, 200);
+
+        this.lastScrollY = currentScrollY;
+    }
+
+    applyScrollGlow() {
+        document.querySelectorAll('.panel-frame').forEach(frame => {
+            const rect = frame.getBoundingClientRect();
+            if (rect.top < window.innerHeight && rect.bottom > 0) {
+                frame.classList.add('scroll-glow');
+                setTimeout(() => frame.classList.remove('scroll-glow'), 600);
+            }
+        });
+    }
+
+    removeScrollGlow() {
+        document.querySelectorAll('.panel-frame').forEach(frame => {
+            frame.classList.remove('scroll-glow');
+        });
+    }
+
+    createScrollBurst() {
+        this.burstElement.classList.remove('active');
+        void this.burstElement.offsetWidth; // Force reflow
+        this.burstElement.classList.add('active');
+
+        setTimeout(() => {
+            this.burstElement.classList.remove('active');
+        }, 800);
+    }
+
+    createParticles() {
+        const colors = [
+            'rgba(255, 215, 0, 0.8)',    // Or
+            'rgba(255, 140, 0, 0.8)',    // Orange
+            'rgba(255, 20, 147, 0.8)',   // Rose
+            'rgba(255, 0, 50, 0.8)',     // Rouge
+            'rgba(0, 150, 255, 0.8)'     // Bleu
+        ];
+
+        for (let i = 0; i < 15; i++) {
+            setTimeout(() => {
+                const particle = document.createElement('div');
+                particle.className = 'scroll-particle';
+                particle.style.left = `${Math.random() * window.innerWidth}px`;
+                particle.style.top = `${window.innerHeight / 2 + (Math.random() - 0.5) * 200}px`;
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+                // Animation aléatoire
+                const randomX = (Math.random() - 0.5) * 400;
+                particle.style.setProperty('--random-x', `${randomX}px`);
+
+                document.body.appendChild(particle);
+
+                // Activer l'animation
+                requestAnimationFrame(() => {
+                    particle.classList.add('active');
+                });
+
+                // Nettoyer
+                setTimeout(() => {
+                    particle.remove();
+                }, 1500);
+            }, i * 30);
+        }
+    }
+}
+
+// ================================================
 // INITIALIZE APPLICATION
 // ================================================
 
 document.addEventListener('DOMContentLoaded', () => {
     const analyzer = new SpectralAnalyzer();
+    const scrollEffects = new ScrollEffects();
 });
