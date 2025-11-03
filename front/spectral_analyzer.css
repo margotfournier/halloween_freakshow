@@ -50,90 +50,146 @@ body::before {
     z-index: 1;
 }
 
-/* Rotating circus spotlights - 8 projecteurs wahou */
+/* Rotating circus spotlights - Circulation continue autour de l'écran */
 body::after {
     content: '';
     position: fixed;
-    top: -50%;
-    left: -50%;
+    top: 50%;
+    left: 50%;
     width: 200%;
     height: 200%;
+    transform: translate(-50%, -50%);
     background:
-        /* Projecteur 1 - Or brillant éclatant */
-        radial-gradient(ellipse 400px 800px at 10% 20%, rgba(255, 215, 0, 0.35) 0%, rgba(255, 215, 0, 0.15) 15%, transparent 40%),
-        /* Projecteur 2 - Rouge intense */
-        radial-gradient(ellipse 420px 850px at 90% 15%, rgba(255, 0, 50, 0.32) 0%, rgba(220, 20, 60, 0.14) 15%, transparent 40%),
-        /* Projecteur 3 - Orange flamboyant */
-        radial-gradient(ellipse 380px 780px at 25% 80%, rgba(255, 140, 0, 0.3) 0%, rgba(255, 100, 0, 0.12) 15%, transparent 40%),
-        /* Projecteur 4 - Rose magenta */
-        radial-gradient(ellipse 400px 820px at 75% 85%, rgba(255, 20, 147, 0.28) 0%, rgba(255, 105, 180, 0.12) 15%, transparent 40%),
-        /* Projecteur 5 - Bleu électrique */
-        radial-gradient(ellipse 360px 750px at 50% 5%, rgba(0, 150, 255, 0.26) 0%, rgba(30, 144, 255, 0.11) 15%, transparent 40%),
-        /* Projecteur 6 - Or cuivré */
-        radial-gradient(ellipse 410px 830px at 95% 50%, rgba(255, 185, 0, 0.3) 0%, rgba(218, 165, 32, 0.13) 15%, transparent 40%),
-        /* Projecteur 7 - Rose corail */
-        radial-gradient(ellipse 370px 770px at 5% 60%, rgba(255, 127, 80, 0.27) 0%, rgba(255, 99, 71, 0.11) 15%, transparent 40%),
-        /* Projecteur 8 - Orange doré */
-        radial-gradient(ellipse 390px 800px at 60% 95%, rgba(255, 165, 0, 0.29) 0%, rgba(255, 140, 0, 0.12) 15%, transparent 40%);
-    animation: rotateSpotlights 45s linear infinite;
+        /* Projecteur 1 - Or brillant - Position 0° (haut) */
+        radial-gradient(ellipse 600px 1100px at 50% 10%,
+            rgba(255, 215, 0, 0.9) 0%,
+            rgba(255, 215, 0, 0.5) 20%,
+            rgba(255, 215, 0, 0.2) 35%,
+            transparent 55%),
+        /* Projecteur 2 - Rose bonbon - Position 40° */
+        radial-gradient(ellipse 610px 1110px at 75% 18%,
+            rgba(255, 105, 180, 0.87) 0%,
+            rgba(255, 130, 200, 0.49) 20%,
+            rgba(255, 150, 210, 0.19) 35%,
+            transparent 55%),
+        /* Projecteur 3 - Rouge vif - Position 80° */
+        radial-gradient(ellipse 620px 1120px at 88% 35%,
+            rgba(255, 30, 60, 0.85) 0%,
+            rgba(255, 50, 80, 0.48) 20%,
+            rgba(220, 20, 60, 0.18) 35%,
+            transparent 55%),
+        /* Projecteur 4 - Orange intense - Position 120° (droite) */
+        radial-gradient(ellipse 590px 1090px at 88% 65%,
+            rgba(255, 120, 0, 0.82) 0%,
+            rgba(255, 140, 30, 0.46) 20%,
+            rgba(255, 100, 0, 0.16) 35%,
+            transparent 55%),
+        /* Projecteur 5 - Rose magenta - Position 160° */
+        radial-gradient(ellipse 605px 1105px at 75% 82%,
+            rgba(255, 0, 120, 0.8) 0%,
+            rgba(255, 50, 150, 0.45) 20%,
+            rgba(255, 105, 180, 0.15) 35%,
+            transparent 55%),
+        /* Projecteur 6 - Bleu cyan - Position 200° (bas) */
+        radial-gradient(ellipse 600px 1100px at 50% 90%,
+            rgba(0, 180, 255, 0.78) 0%,
+            rgba(50, 200, 255, 0.44) 20%,
+            rgba(30, 144, 255, 0.14) 35%,
+            transparent 55%),
+        /* Projecteur 7 - Violet pourpre - Position 240° */
+        radial-gradient(ellipse 615px 1115px at 25% 82%,
+            rgba(180, 0, 255, 0.76) 0%,
+            rgba(200, 50, 255, 0.42) 20%,
+            rgba(150, 30, 220, 0.13) 35%,
+            transparent 55%),
+        /* Projecteur 8 - Rose corail - Position 280° (gauche) */
+        radial-gradient(ellipse 608px 1108px at 12% 65%,
+            rgba(255, 100, 100, 0.74) 0%,
+            rgba(255, 120, 120, 0.41) 20%,
+            rgba(255, 99, 71, 0.12) 35%,
+            transparent 55%),
+        /* Projecteur 9 - Vert émeraude - Position 320° */
+        radial-gradient(ellipse 610px 1110px at 12% 35%,
+            rgba(0, 255, 150, 0.72) 0%,
+            rgba(50, 255, 180, 0.4) 20%,
+            rgba(30, 220, 140, 0.11) 35%,
+            transparent 55%);
+    animation: circularSpotlights 40s linear infinite;
     pointer-events: none;
     z-index: 0;
-    mix-blend-mode: screen;
+    mix-blend-mode: normal;
+    opacity: 0.85;
 }
 
-@keyframes rotateSpotlights {
-    from {
-        transform: rotate(0deg);
+@keyframes circularSpotlights {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
         opacity: 0.95;
     }
     25% {
         opacity: 1;
     }
     50% {
+        transform: translate(-50%, -50%) rotate(180deg);
         opacity: 0.95;
     }
     75% {
         opacity: 1;
     }
-    to {
-        transform: rotate(360deg);
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
         opacity: 0.95;
     }
 }
 
-/* Contre-rotation pour effet cirque dynamique */
+/* Contre-rotation pour effet cirque dynamique - Circulation inverse */
 .container::before {
     content: '';
     position: fixed;
-    top: -50%;
-    left: -50%;
+    top: 50%;
+    left: 50%;
     width: 200%;
     height: 200%;
+    transform: translate(-50%, -50%);
     background:
-        /* Contre-projecteur 1 - Or rose */
-        radial-gradient(ellipse 450px 900px at 35% 35%, rgba(255, 215, 0, 0.15) 0%, rgba(255, 185, 120, 0.08) 12%, transparent 35%),
-        /* Contre-projecteur 2 - Rouge magenta */
-        radial-gradient(ellipse 480px 950px at 65% 65%, rgba(255, 0, 100, 0.14) 0%, rgba(220, 20, 100, 0.07) 12%, transparent 35%),
-        /* Contre-projecteur 3 - Bleu cyan */
-        radial-gradient(ellipse 420px 850px at 50% 15%, rgba(0, 191, 255, 0.12) 0%, rgba(30, 180, 255, 0.06) 12%, transparent 35%),
-        /* Contre-projecteur 4 - Orange vif */
-        radial-gradient(ellipse 440px 880px at 15% 75%, rgba(255, 120, 0, 0.13) 0%, rgba(255, 140, 50, 0.07) 12%, transparent 35%);
-    animation: rotateSpotlightsReverse 60s linear infinite;
+        /* Contre-projecteur 1 - Jaune citron - Position 22.5° */
+        radial-gradient(ellipse 580px 1080px at 65% 15%,
+            rgba(255, 240, 0, 0.55) 0%,
+            rgba(255, 220, 60, 0.28) 18%,
+            transparent 45%),
+        /* Contre-projecteur 2 - Magenta - Position 112.5° */
+        radial-gradient(ellipse 600px 1100px at 85% 65%,
+            rgba(255, 0, 150, 0.52) 0%,
+            rgba(240, 50, 170, 0.26) 18%,
+            transparent 45%),
+        /* Contre-projecteur 3 - Turquoise - Position 202.5° */
+        radial-gradient(ellipse 570px 1070px at 35% 85%,
+            rgba(0, 220, 255, 0.5) 0%,
+            rgba(50, 230, 255, 0.25) 18%,
+            transparent 45%),
+        /* Contre-projecteur 4 - Orange mandarine - Position 292.5° */
+        radial-gradient(ellipse 590px 1090px at 15% 35%,
+            rgba(255, 100, 0, 0.48) 0%,
+            rgba(255, 130, 40, 0.24) 18%,
+            transparent 45%);
+    animation: circularSpotlightsReverse 55s linear infinite;
     pointer-events: none;
     z-index: 0;
-    mix-blend-mode: screen;
+    mix-blend-mode: normal;
+    opacity: 0.7;
 }
 
-@keyframes rotateSpotlightsReverse {
-    from {
-        transform: rotate(360deg);
+@keyframes circularSpotlightsReverse {
+    0% {
+        transform: translate(-50%, -50%) rotate(360deg);
         opacity: 0.8;
     }
     50% {
+        transform: translate(-50%, -50%) rotate(180deg);
         opacity: 0.9;
     }
-    to {
-        transform: rotate(0deg);
+    100% {
+        transform: translate(-50%, -50%) rotate(0deg);
         opacity: 0.8;
     }
 }
@@ -1155,11 +1211,11 @@ body::after {
 
 /* Accélération des lumières au scroll */
 body.scrolling::after {
-    animation: rotateSpotlights 15s linear infinite !important;
+    animation: circularSpotlights 15s linear infinite !important;
 }
 
 body.scrolling .container::before {
-    animation: rotateSpotlightsReverse 20s linear infinite !important;
+    animation: circularSpotlightsReverse 20s linear infinite !important;
 }
 
 /* Éléments qui apparaissent au scroll */
