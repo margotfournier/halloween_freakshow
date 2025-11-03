@@ -13,7 +13,7 @@ uv pip install -r requirements.txt
 ```
 ## Utilisation
 
-### Générer un fichier audio avec message caché
+### Option 1 : Générer à partir de texte
 
 ```bash
 python fun.py
@@ -21,9 +21,31 @@ python fun.py
 
 Ce script va :
 - Créer une image avec votre texte
+- Afficher l'image générée
 - Convertir l'image en signal audio
-- Générer un fichier `message_cache.wav`
-- Afficher un aperçu du spectrogramme
+- Générer un fichier `message_cache_lisible.wav`
+- Afficher le spectrogramme
+
+Pour modifier le message, éditez la variable `text` dans [fun.py](fun.py):
+
+```python
+text = "votre message ici"
+```
+
+### Option 2 : Utiliser votre propre image
+
+```bash
+python fun_from_image.py mon_image.png
+```
+
+Ce script va :
+- Charger votre image (PNG, JPG, etc.)
+- La convertir en niveaux de gris automatiquement
+- Afficher l'image avant conversion
+- Générer un fichier `message_cache_custom.wav`
+- Afficher le spectrogramme
+
+**Conseil** : Utilisez des images avec un fond noir et du texte/motifs blancs pour un meilleur résultat.
 
 ### Lire le spectrogramme d'un fichier audio
 
@@ -31,15 +53,7 @@ Ce script va :
 python read_spectrogram.py
 ```
 
-Ce script va afficher le spectrogramme du fichier `message_cache.wav` pour visualiser le message caché.
-
-## Personnalisation
-
-Pour modifier le message, éditez la variable `text` dans [fun.py](fun.py):
-
-```python
-text = "votre message ici"
-```
+Ce script affiche le spectrogramme d'un fichier audio pour visualiser le message caché.
 
 ## Désactivation de l'environnement virtuel
 
