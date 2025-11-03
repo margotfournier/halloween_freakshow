@@ -21,7 +21,7 @@ min_freq, max_freq = 300, 8000
 # 1️⃣ Charger et préparer l'image
 # ==============================
 try:
-    img = Image.open(image_path).convert('L')  # convertir en niveaux de gris
+    img = Image.open(image_path).convert('L')  # convertir en niveaux de gris 
     print(f"✅ Image chargée: {img.size[0]}x{img.size[1]} pixels")
 except Exception as e:
     print(f"❌ Erreur lors du chargement de l'image: {e}")
@@ -67,7 +67,7 @@ write(output_name, sample_rate, (signal*32767).astype(np.int16))
 print(f"✅ Fichier généré : {output_name}")
 
 # ==============================
-# 4️⃣ Visualisation et sauvegarde du spectrogramme
+# 4️⃣ Visualisation rapide
 # ==============================
 import warnings
 warnings.filterwarnings('ignore', category=RuntimeWarning)
@@ -77,11 +77,4 @@ plt.specgram(signal, Fs=sample_rate, NFFT=1024, noverlap=512, cmap="inferno")
 plt.title("Spectrogramme de votre image")
 plt.xlabel("Temps (s)")
 plt.ylabel("Fréquence (Hz)")
-plt.tight_layout()
-
-# Sauvegarder le spectrogramme
-spectrogram_filename = "spectrogramme_custom.png"
-plt.savefig(spectrogram_filename, dpi=300, bbox_inches='tight')
-print(f"✅ Spectrogramme enregistré : {spectrogram_filename}")
-
 plt.show()

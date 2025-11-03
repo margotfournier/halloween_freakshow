@@ -24,7 +24,7 @@ class SpectralAnalyzer {
         this.analyzeBtn = document.getElementById('analyzeBtn');
         this.fileName = document.getElementById('fileName');
         this.indicator = document.getElementById('recordingIndicator');
-        this.indicatorText = indicator.querySelector('.indicator-text');
+        this.indicatorText = this.indicator.querySelector('.indicator-text');
         this.waveformCanvas = document.getElementById('waveformCanvas');
         this.spectrogramCanvas = document.getElementById('spectrogramCanvas');
         this.machineStatus = document.getElementById('machineStatus');
@@ -55,7 +55,20 @@ class SpectralAnalyzer {
 
     async startRecording() {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            // Vérifier si l'API est disponible
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                throw new Error('L\'API de capture audio n\'est pas disponible. Utilisez HTTPS ou localhost.');
+            }
+
+            console.log('Demande d\'accès au microphone...');
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true
+                }
+            });
+            console.log('Microphone autorisé !');
 
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const source = this.audioContext.createMediaStreamSource(stream);
@@ -67,22 +80,43 @@ class SpectralAnalyzer {
             const bufferLength = this.analyser.frequencyBinCount;
             this.dataArray = new Uint8Array(bufferLength);
 
-            this.mediaRecorder = new MediaRecorder(stream);
+            // Vérifier les codecs supportés
+            let mimeType = 'audio/webm';
+            if (!MediaRecorder.isTypeSupported(mimeType)) {
+                mimeType = 'audio/ogg';
+                if (!MediaRecorder.isTypeSupported(mimeType)) {
+                    mimeType = 'audio/mp4';
+                }
+            }
+            console.log('Type MIME utilisé:', mimeType);
+
+            this.mediaRecorder = new MediaRecorder(stream, { mimeType });
             this.audioChunks = [];
 
             this.mediaRecorder.ondataavailable = (event) => {
-                this.audioChunks.push(event.data);
+                if (event.data.size > 0) {
+                    this.audioChunks.push(event.data);
+                    console.log('Données audio reçues:', event.data.size, 'bytes');
+                }
             };
 
             this.mediaRecorder.onstop = () => {
-                this.audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
+                console.log('Enregistrement arrêté. Chunks:', this.audioChunks.length);
+                this.audioBlob = new Blob(this.audioChunks, { type: mimeType });
+                console.log('Taille du blob audio:', this.audioBlob.size, 'bytes');
                 this.analyzeBtn.disabled = false;
                 this.updateMachineStatus('Enregistrement terminé - Prêt à analyser');
                 stream.getTracks().forEach(track => track.stop());
             };
 
-            this.mediaRecorder.start();
+            this.mediaRecorder.onerror = (event) => {
+                console.error('Erreur MediaRecorder:', event.error);
+                alert('Erreur pendant l\'enregistrement: ' + event.error.message);
+            };
+
+            this.mediaRecorder.start(100); // Collecter les données toutes les 100ms
             this.isRecording = true;
+            console.log('Enregistrement démarré');
 
             // UI updates
             this.recordBtn.disabled = true;
@@ -96,7 +130,23 @@ class SpectralAnalyzer {
 
         } catch (error) {
             console.error('Erreur lors de l\'accès au microphone:', error);
-            alert('Impossible d\'accéder au microphone. Veuillez vérifier les permissions.');
+            let errorMessage = 'Impossible d\'accéder au microphone.\n\n';
+
+            if (error.name === 'NotAllowedError') {
+                errorMessage += 'Permission refusée. Veuillez autoriser l\'accès au microphone.';
+            } else if (error.name === 'NotFoundError') {
+                errorMessage += 'Aucun microphone détecté sur votre appareil.';
+            } else if (error.name === 'NotSupportedError') {
+                errorMessage += 'Votre navigateur ne supporte pas cette fonctionnalité.';
+            } else if (error.message.includes('HTTPS') || error.message.includes('localhost')) {
+                errorMessage += 'Vous devez utiliser HTTPS ou localhost pour accéder au microphone.\n\n';
+                errorMessage += 'Lancez un serveur local (voir README.md)';
+            } else {
+                errorMessage += error.message;
+            }
+
+            alert(errorMessage);
+            this.updateMachineStatus('Erreur d\'accès au microphone');
         }
     }
 
