@@ -22,19 +22,20 @@ class SpectralAnalyzer {
         this.mainToggle = document.getElementById('mainToggle');
         this.analyzeKnob = document.getElementById('analyzeKnob');
         this.statusLight = document.getElementById('statusLight');
-        this.gaugeCanvas = document.getElementById('gaugeCanvas');
+        this.waveformCanvas = document.getElementById('waveformCanvas');
         this.spectrogramCanvas = document.getElementById('spectrogramCanvas');
         this.machineStatus = document.getElementById('machineStatus');
+        this.analyzeReady = document.getElementById('analyzeReady');
 
         // Canvas contexts
-        this.gaugeCtx = this.gaugeCanvas.getContext('2d');
+        this.waveformCtx = this.waveformCanvas.getContext('2d');
         this.specCtx = this.spectrogramCanvas.getContext('2d');
 
         // Spectrogram data
         this.spectrogramData = [];
 
-        // Gauge state
-        this.gaugeValue = 0;
+        // Active names
+        this.activeNames = new Set();
 
         this.init();
     }
@@ -44,9 +45,117 @@ class SpectralAnalyzer {
         this.mainToggle.addEventListener('click', () => this.toggleRecording());
         this.analyzeKnob.addEventListener('click', () => this.handleAnalyze());
 
-        // Initialize gauge
-        this.drawGauge();
+        // Initialize waveform canvas
+        this.drawWaveformGrid();
         this.updateMachineStatus('Machine au repos');
+
+        // Setup name buttons
+        this.setupNameButtons();
+    }
+
+    setupNameButtons() {
+        const nameButtons = document.querySelectorAll('.toggle-circular.small');
+        nameButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                button.classList.toggle('active');
+                const name = button.getAttribute('data-name');
+
+                if (button.classList.contains('active')) {
+                    this.activeNames.add(name);
+                } else {
+                    this.activeNames.delete(name);
+                }
+
+                console.log('Noms actifs:', Array.from(this.activeNames));
+            });
+        });
+    }
+
+    drawWaveformGrid() {
+        const canvas = this.waveformCanvas;
+        const ctx = this.waveformCtx;
+        const width = canvas.width;
+        const height = canvas.height;
+
+        // Clear canvas
+        ctx.clearRect(0, 0, width, height);
+
+        // Draw grid
+        ctx.strokeStyle = 'rgba(255, 215, 0, 0.15)';
+        ctx.lineWidth = 0.5;
+
+        // Vertical grid lines
+        const gridSpacing = 20;
+        for (let x = 0; x < width; x += gridSpacing) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, height);
+            ctx.stroke();
+        }
+
+        // Horizontal grid lines
+        for (let y = 0; y < height; y += gridSpacing) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(width, y);
+            ctx.stroke();
+        }
+
+        // Draw center line
+        ctx.strokeStyle = 'rgba(255, 215, 0, 0.3)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, height / 2);
+        ctx.lineTo(width, height / 2);
+        ctx.stroke();
+    }
+
+    updateWaveform() {
+        if (!this.analyser || !this.isRecording) return;
+
+        this.analyser.getByteTimeDomainData(this.dataArray);
+
+        const canvas = this.waveformCanvas;
+        const ctx = this.waveformCtx;
+        const width = canvas.width;
+        const height = canvas.height;
+
+        // Redraw grid
+        this.drawWaveformGrid();
+
+        // Draw waveform line
+        ctx.strokeStyle = '#FFD700';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+
+        const sliceWidth = width / this.dataArray.length;
+        let x = 0;
+
+        for (let i = 0; i < this.dataArray.length; i++) {
+            const v = this.dataArray[i] / 128.0;
+            const y = (v * height) / 2;
+
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+
+            x += sliceWidth;
+        }
+
+        ctx.stroke();
+
+        // Add glow effect
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = 'rgba(255, 215, 0, 0.6)';
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // Continue animation loop
+        if (this.isRecording) {
+            requestAnimationFrame(() => this.updateWaveform());
+        }
     }
 
     toggleRecording() {
@@ -128,6 +237,12 @@ class SpectralAnalyzer {
                 console.log('Taille du blob audio:', this.audioBlob.size, 'bytes');
                 this.updateMachineStatus('Enregistrement terminé - Prêt à analyser');
                 stream.getTracks().forEach(track => track.stop());
+
+                // Activer la LED verte
+                const ledGreen = this.analyzeReady.querySelector('.led-green');
+                if (ledGreen) {
+                    ledGreen.classList.add('active');
+                }
             };
 
             this.mediaRecorder.onerror = (event) => {
@@ -143,8 +258,8 @@ class SpectralAnalyzer {
             this.statusLight.classList.add('active');
             this.updateMachineStatus('Enregistrement en cours...');
 
-            // Start gauge visualization
-            this.animateGauge();
+            // Start waveform visualization
+            this.updateWaveform();
 
         } catch (error) {
             console.error('Erreur lors de l\'accès au microphone:', error);
@@ -176,14 +291,8 @@ class SpectralAnalyzer {
             // UI updates - Vintage dashboard
             this.statusLight.classList.remove('active');
 
-            // Stop gauge animation
-            if (this.gaugeAnimationId) {
-                cancelAnimationFrame(this.gaugeAnimationId);
-            }
-
-            // Reset gauge to 0
-            this.gaugeValue = 0;
-            this.drawGauge();
+            // Reset waveform canvas
+            this.drawWaveformGrid();
         }
     }
 

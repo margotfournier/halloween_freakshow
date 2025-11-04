@@ -29,49 +29,59 @@
                     <div class="brass-screw bottom-left"></div>
                     <div class="brass-screw bottom-right"></div>
 
-                    <!-- Main Toggle Switch REC/STOP -->
-                    <div class="toggle-switch-container">
-                        <div class="engraved-label top">REC</div>
-                        <div class="toggle-switch" id="mainToggle">
-                            <div class="toggle-base">
-                                <div class="toggle-washer"></div>
-                                <div class="toggle-lever">
-                                    <div class="lever-knurling"></div>
-                                </div>
+                    <!-- Left Column: REC/STOP + État -->
+                    <div class="left-column">
+                        <!-- Main Toggle Switch REC/STOP (Bouton à cran) avec LED -->
+                        <div class="rec-row">
+                            <div class="engraved-label top">REC</div>
+                            <!-- Status indicator light (LED avec pulse) -->
+                            <div class="status-rec" id="statusLight">
+                                <div class="status-rec-core"></div>
                             </div>
                         </div>
-                        <div class="engraved-label bottom">STOP</div>
+
+                        <div class="toggle-switch-container">
+                            <div class="toggle-detent" id="mainToggle"></div>
+                        </div>
+
+                        <!-- Name buttons -->
+                        <div class="name-buttons-container">
+                            <div class="name-button-item">
+                                <div class="toggle-circular small" data-name="TOM"></div>
+                                <div class="engraved-label small">TOM</div>
+                            </div>
+                            <div class="name-button-item">
+                                <div class="toggle-circular small" data-name="ANAÏS"></div>
+                                <div class="engraved-label small">ANAÏS</div>
+                            </div>
+                            <div class="name-button-item">
+                                <div class="toggle-circular small" data-name="MARGOT"></div>
+                                <div class="engraved-label small">MARGOT</div>
+                            </div>
+                            <div class="name-button-item">
+                                <div class="toggle-circular small" data-name="GEORGES"></div>
+                                <div class="engraved-label small">GEORGES</div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Circular Gauge Display -->
+                    <!-- Center: Audio Visualization (Waveform) -->
                     <div class="circular-gauge-container">
-                        <div class="gauge-glass">
-                            <div class="glass-reflection"></div>
-                            <canvas id="gaugeCanvas" width="180" height="180"></canvas>
-                            <div class="gauge-graduations"></div>
+                        <div class="audio-viz-container">
+                            <canvas id="waveformCanvas" width="170" height="170"></canvas>
                         </div>
-                        <div class="gauge-rim"></div>
                     </div>
 
-                    <!-- Rotary Knob for Analysis -->
-                    <div class="rotary-knob-container">
-                        <div class="engraved-label knob">ANALYSE</div>
-                        <div class="rotary-knob" id="analyzeKnob">
-                            <div class="knob-top">
-                                <div class="knob-knurling"></div>
-                                <div class="knob-indicator"></div>
-                                <div class="knob-icon">↑</div>
+                    <!-- Right Column: Analyze Button + LED verte -->
+                    <div class="right-column">
+                        <div class="rotary-knob-container">
+                            <!-- LED verte pour indiquer disponibilité -->
+                            <div class="analyze-ready-indicator" id="analyzeReady">
+                                <div class="led-green"></div>
                             </div>
-                            <div class="knob-base"></div>
+                            <div class="engraved-label knob">ANALYSE</div>
+                            <div class="analyze-press" id="analyzeKnob"></div>
                         </div>
-                    </div>
-
-                    <!-- Status indicator light -->
-                    <div class="status-light-container">
-                        <div class="status-light" id="statusLight">
-                            <div class="light-glow"></div>
-                        </div>
-                        <div class="engraved-label">ÉTAT</div>
                     </div>
                 </div>
             </div>
@@ -105,6 +115,6 @@
         </footer>
     </div>
 
-    <script src="spectral_analyzer.js?v=2"></script>
+    <script src="spectral_analyzer.js?v=3"></script>
 </body>
 </html>

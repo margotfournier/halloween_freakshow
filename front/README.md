@@ -1,4 +1,4 @@
-# 🎪 Analyseur Spectral Vintage - Le Grand Cirque
+hygbn # 🎪 Analyseur Spectral Vintage - Le Grand Cirque
 
 Application web d'analyse spectrale avec esthétique cirque vintage (années 1920-50), conçue pour révéler des indices cachés dans des enregistrements audio via spectrogramme.
 
@@ -31,9 +31,6 @@ Si vous avez Python installé :
 # Python 3
 cd front
 python3 -m http.server 8000
-
-# OU Python 2
-python -m SimpleHTTPServer 8000
 ```
 
 Puis ouvrez votre navigateur à : **http://localhost:8000**
