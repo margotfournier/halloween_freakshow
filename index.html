@@ -1,22 +1,90 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Halloween Freakshow</title>
-    <link rel="icon" href="assets/favicon.png">
-    <link rel="stylesheet" href="styles.css">
-    <!-- Important pour un site de projet hébergé sous /halloween_freakshow/ -->
-    <base href="/halloween_freakshow/">
-  </head>
-  <body>
-    <header>
-      <h1>🎃 Halloween Freakshow 🎪</h1>
-      <p>Bienvenue au spectacle…</p>
-    </header>
-    <main>
-      <img src="assets/cover.jpg" alt="Affiche Freakshow" />
-      <script src="main.js"></script>
-    </main>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="refresh" content="0; url=spectral_analyzer.html" />
+  <title>Cirque Audio · Studio Freakshow</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #040205;
+      --bg-top: #12000d;
+      --ink: #f5f2ff;
+      --muted: rgba(245, 242, 255, 0.65);
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: radial-gradient(circle at 20% 20%, rgba(248, 7, 125, 0.18), transparent 50%),
+        radial-gradient(circle at 80% 0%, rgba(33, 247, 255, 0.2), transparent 60%),
+        linear-gradient(160deg, var(--bg-base), var(--bg-top));
+      color: var(--ink);
+    }
+
+    .loader {
+      text-align: center;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      letter-spacing: 0.08em;
+      margin: 0 0 20px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      letter-spacing: 0.3rem;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      margin: 30px auto;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top-color: #f9077d;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    a {
+      color: #21f7ff;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.2rem;
+      font-size: 0.9rem;
+    }
+
+    a:hover {
+      color: #f9077d;
+    }
+  </style>
+</head>
+<body>
+  <div class="loader">
+    <h1>Studio Freakshow</h1>
+    <div class="spinner"></div>
+    <p>Redirection en cours...</p>
+    <p style="margin-top: 40px;">
+      <a href="spectral_analyzer.html">Cliquez ici si vous n'êtes pas redirigé</a>
+    </p>
+  </div>
+</body>
 </html>
