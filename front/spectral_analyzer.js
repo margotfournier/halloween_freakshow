@@ -18,7 +18,7 @@ class SpectralAnalyzer {
         this.animationId = null;
         this.gaugeAnimationId = null;
 
-        // DOM elements - Vintage Dashboard
+        // DOM elements - Modern Interface
         this.mainToggle = document.getElementById('mainToggle');
         this.analyzeKnob = document.getElementById('analyzeKnob');
         this.statusLight = document.getElementById('statusLight');
@@ -54,7 +54,7 @@ class SpectralAnalyzer {
     }
 
     setupNameButtons() {
-        const nameButtons = document.querySelectorAll('.toggle-circular.small');
+        const nameButtons = document.querySelectorAll('.tag-button');
         nameButtons.forEach(button => {
             button.addEventListener('click', () => {
                 button.classList.toggle('active');
@@ -62,6 +62,7 @@ class SpectralAnalyzer {
 
                 if (button.classList.contains('active')) {
                     this.activeNames.add(name);
+                    this.createConfetti(button);
                 } else {
                     this.activeNames.delete(name);
                 }
@@ -69,6 +70,28 @@ class SpectralAnalyzer {
                 console.log('Noms actifs:', Array.from(this.activeNames));
             });
         });
+    }
+
+    createConfetti(element) {
+        const rect = element.getBoundingClientRect();
+        const colors = ['#FF2D55', '#FF9500', '#FFCC00', '#AF52DE', '#007AFF'];
+
+        for (let i = 0; i < 8; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = `${rect.left + rect.width / 2}px`;
+            particle.style.top = `${rect.top + rect.height / 2}px`;
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+            const angle = (Math.PI * 2 * i) / 8;
+            const velocity = 2 + Math.random() * 2;
+            particle.style.setProperty('--tx', `${Math.cos(angle) * velocity * 50}px`);
+            particle.style.setProperty('--ty', `${Math.sin(angle) * velocity * 50}px`);
+
+            document.body.appendChild(particle);
+
+            setTimeout(() => particle.remove(), 3000);
+        }
     }
 
     drawWaveformGrid() {
@@ -80,12 +103,12 @@ class SpectralAnalyzer {
         // Clear canvas
         ctx.clearRect(0, 0, width, height);
 
-        // Draw grid
-        ctx.strokeStyle = 'rgba(255, 215, 0, 0.15)';
+        // Draw modern grid with circus colors
+        ctx.strokeStyle = 'rgba(255, 45, 85, 0.08)';
         ctx.lineWidth = 0.5;
 
         // Vertical grid lines
-        const gridSpacing = 20;
+        const gridSpacing = 30;
         for (let x = 0; x < width; x += gridSpacing) {
             ctx.beginPath();
             ctx.moveTo(x, 0);
@@ -102,8 +125,8 @@ class SpectralAnalyzer {
         }
 
         // Draw center line
-        ctx.strokeStyle = 'rgba(255, 215, 0, 0.3)';
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(175, 82, 222, 0.2)';
+        ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(0, height / 2);
         ctx.lineTo(width, height / 2);
@@ -123,9 +146,16 @@ class SpectralAnalyzer {
         // Redraw grid
         this.drawWaveformGrid();
 
-        // Draw waveform line
-        ctx.strokeStyle = '#FFD700';
-        ctx.lineWidth = 2;
+        // Draw waveform with gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+        gradient.addColorStop(0, '#FF2D55');
+        gradient.addColorStop(0.5, '#AF52DE');
+        gradient.addColorStop(1, '#007AFF');
+
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.beginPath();
 
         const sliceWidth = width / this.dataArray.length;
@@ -147,8 +177,8 @@ class SpectralAnalyzer {
         ctx.stroke();
 
         // Add glow effect
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = 'rgba(255, 215, 0, 0.6)';
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = 'rgba(175, 82, 222, 0.5)';
         ctx.stroke();
         ctx.shadowBlur = 0;
 
@@ -161,22 +191,17 @@ class SpectralAnalyzer {
     toggleRecording() {
         if (!this.isRecording) {
             this.startRecording();
-            this.mainToggle.classList.remove('inactive');
             this.mainToggle.classList.add('active');
         } else {
             this.stopRecording();
             this.mainToggle.classList.remove('active');
-            this.mainToggle.classList.add('inactive');
         }
     }
 
     handleAnalyze() {
-        if (this.audioBlob && !this.analyzeKnob.classList.contains('active')) {
-            this.analyzeKnob.classList.add('active');
+        if (this.audioBlob) {
+            this.analyzeKnob.disabled = true;
             this.analyzeAudio();
-            setTimeout(() => {
-                this.analyzeKnob.classList.remove('active');
-            }, 1000);
         }
     }
 
@@ -238,10 +263,14 @@ class SpectralAnalyzer {
                 this.updateMachineStatus('Enregistrement terminé - Prêt à analyser');
                 stream.getTracks().forEach(track => track.stop());
 
-                // Activer la LED verte
-                const ledGreen = this.analyzeReady.querySelector('.led-green');
-                if (ledGreen) {
-                    ledGreen.classList.add('active');
+                // Activer l'indicateur de disponibilité
+                if (this.analyzeReady) {
+                    this.analyzeReady.classList.add('active');
+                }
+
+                // Activer le bouton d'analyse
+                if (this.analyzeKnob) {
+                    this.analyzeKnob.disabled = false;
                 }
             };
 
@@ -257,6 +286,11 @@ class SpectralAnalyzer {
             // UI updates - Vintage dashboard
             this.statusLight.classList.add('active');
             this.updateMachineStatus('Enregistrement en cours...');
+
+            // Désactiver le bouton d'analyse
+            if (this.analyzeKnob) {
+                this.analyzeKnob.disabled = true;
+            }
 
             // Start waveform visualization
             this.updateWaveform();
@@ -392,6 +426,11 @@ class SpectralAnalyzer {
 
             this.updateMachineStatus('Analyse terminée - Spectre révélé');
 
+            // Réactiver le bouton d'analyse
+            if (this.analyzeKnob) {
+                this.analyzeKnob.disabled = false;
+            }
+
         } catch (error) {
             console.error('Erreur lors de l\'analyse:', error);
             alert('Erreur lors de l\'analyse audio: ' + error.message);
@@ -493,31 +532,43 @@ class SpectralAnalyzer {
     }
 
     getVintageColor(intensity) {
-        // Create vintage sepia/gold color gradient
+        // Modern circus color gradient
         if (intensity < 0.2) {
-            // Very dark - almost black
-            return `rgb(15, 10, 8)`;
+            // Very dark
+            return `rgb(17, 24, 39)`;
         } else if (intensity < 0.4) {
-            // Dark sepia
+            // Dark purple
             const val = (intensity - 0.2) / 0.2;
-            return `rgb(${42 * val}, ${24 * val}, ${16 * val})`;
+            const r = Math.floor(75 * val);
+            const g = Math.floor(0 * val);
+            const b = Math.floor(130 * val);
+            return `rgb(${r}, ${g}, ${b})`;
         } else if (intensity < 0.6) {
-            // Medium sepia
+            // Purple to pink
             const val = (intensity - 0.4) / 0.2;
-            return `rgb(${92 + (107 - 92) * val}, ${64 + (49 - 64) * val}, ${51 + (35 - 51) * val})`;
+            const r = Math.floor(75 + (175 - 75) * val);
+            const g = Math.floor(0 + (82 - 0) * val);
+            const b = Math.floor(130 + (222 - 130) * val);
+            return `rgb(${r}, ${g}, ${b})`;
         } else if (intensity < 0.8) {
-            // Light brown to gold
+            // Pink to orange
             const val = (intensity - 0.6) / 0.2;
-            return `rgb(${139 + (212 - 139) * val}, ${115 + (175 - 115) * val}, ${85 + (55 - 85) * val})`;
+            const r = Math.floor(175 + (255 - 175) * val);
+            const g = Math.floor(82 + (149 - 82) * val);
+            const b = Math.floor(222 + (0 - 222) * val);
+            return `rgb(${r}, ${g}, ${b})`;
         } else {
-            // Bright gold/cream
+            // Orange to yellow
             const val = (intensity - 0.8) / 0.2;
-            return `rgb(${212 + (245 - 212) * val}, ${175 + (230 - 175) * val}, ${55 + (211 - 55) * val})`;
+            const r = 255;
+            const g = Math.floor(149 + (204 - 149) * val);
+            const b = Math.floor(0);
+            return `rgb(${r}, ${g}, ${b})`;
         }
     }
 
     drawGrid(width, height) {
-        this.specCtx.strokeStyle = 'rgba(212, 175, 55, 0.15)';
+        this.specCtx.strokeStyle = 'rgba(75, 85, 99, 0.2)';
         this.specCtx.lineWidth = 0.5;
 
         // Horizontal lines (frequency)
@@ -646,42 +697,24 @@ class SpectralAnalyzer {
     // ================================================
 
     updateMachineStatus(status) {
-        this.machineStatus.textContent = status;
-
-        // Animate gauge needles based on status
-        const needles = document.querySelectorAll('.gauge-needle');
-        const angle = status.includes('en cours') ? 45 : 0;
-
-        needles.forEach(needle => {
-            needle.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
-        });
+        if (this.machineStatus) {
+            this.machineStatus.textContent = status;
+        }
     }
 }
 
 // ================================================
-// SCROLL EFFECTS WAHOU
+// MODERN SCROLL ANIMATIONS
 // ================================================
 
 class ScrollEffects {
     constructor() {
-        this.lastScrollY = window.scrollY;
-        this.scrollTimeout = null;
-        this.particles = [];
-
         this.init();
     }
 
     init() {
-        // Créer l'élément burst
-        this.burstElement = document.createElement('div');
-        this.burstElement.className = 'scroll-burst';
-        document.body.appendChild(this.burstElement);
-
         // Intersection Observer pour les éléments qui apparaissent
         this.setupIntersectionObserver();
-
-        // Écouter le scroll
-        window.addEventListener('scroll', () => this.handleScroll());
 
         // Initialiser - rendre visible les éléments déjà visibles
         this.checkVisibleElements();
@@ -689,119 +722,33 @@ class ScrollEffects {
 
     setupIntersectionObserver() {
         const options = {
-            threshold: 0.2,
-            rootMargin: '0px 0px -100px 0px'
+            threshold: 0.15,
+            rootMargin: '0px 0px -50px 0px'
         };
 
         this.observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
-                    this.createScrollBurst();
-                    this.createParticles();
                 }
             });
         }, options);
 
-        // Observer les panneaux
-        document.querySelectorAll('.control-panel, .spectrogram-panel').forEach(panel => {
-            this.observer.observe(panel);
+        // Observer les sections
+        document.querySelectorAll('.control-section, .spectrogram-section').forEach(section => {
+            this.observer.observe(section);
         });
     }
 
     checkVisibleElements() {
         // Rendre visible les éléments déjà dans le viewport au chargement
-        const panels = document.querySelectorAll('.control-panel, .spectrogram-panel');
-        panels.forEach(panel => {
-            const rect = panel.getBoundingClientRect();
+        const sections = document.querySelectorAll('.control-section, .spectrogram-section');
+        sections.forEach(section => {
+            const rect = section.getBoundingClientRect();
             if (rect.top < window.innerHeight && rect.bottom > 0) {
-                panel.classList.add('visible');
+                section.classList.add('visible');
             }
         });
-    }
-
-    handleScroll() {
-        const currentScrollY = window.scrollY;
-        const scrollDelta = Math.abs(currentScrollY - this.lastScrollY);
-
-        // Ajouter classe scrolling au body
-        document.body.classList.add('scrolling');
-
-        // Effet glow sur les panels visibles
-        if (scrollDelta > 5) {
-            this.applyScrollGlow();
-        }
-
-        // Retirer la classe après 200ms d'inactivité
-        clearTimeout(this.scrollTimeout);
-        this.scrollTimeout = setTimeout(() => {
-            document.body.classList.remove('scrolling');
-            this.removeScrollGlow();
-        }, 200);
-
-        this.lastScrollY = currentScrollY;
-    }
-
-    applyScrollGlow() {
-        document.querySelectorAll('.panel-frame').forEach(frame => {
-            const rect = frame.getBoundingClientRect();
-            if (rect.top < window.innerHeight && rect.bottom > 0) {
-                frame.classList.add('scroll-glow');
-                setTimeout(() => frame.classList.remove('scroll-glow'), 600);
-            }
-        });
-    }
-
-    removeScrollGlow() {
-        document.querySelectorAll('.panel-frame').forEach(frame => {
-            frame.classList.remove('scroll-glow');
-        });
-    }
-
-    createScrollBurst() {
-        this.burstElement.classList.remove('active');
-        void this.burstElement.offsetWidth; // Force reflow
-        this.burstElement.classList.add('active');
-
-        setTimeout(() => {
-            this.burstElement.classList.remove('active');
-        }, 800);
-    }
-
-    createParticles() {
-        const colors = [
-            'rgba(255, 215, 0, 0.8)',    // Or
-            'rgba(255, 140, 0, 0.8)',    // Orange
-            'rgba(255, 20, 147, 0.8)',   // Rose
-            'rgba(255, 0, 50, 0.8)',     // Rouge
-            'rgba(0, 150, 255, 0.8)'     // Bleu
-        ];
-
-        for (let i = 0; i < 15; i++) {
-            setTimeout(() => {
-                const particle = document.createElement('div');
-                particle.className = 'scroll-particle';
-                particle.style.left = `${Math.random() * window.innerWidth}px`;
-                particle.style.top = `${window.innerHeight / 2 + (Math.random() - 0.5) * 200}px`;
-                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-
-                // Animation aléatoire
-                const randomX = (Math.random() - 0.5) * 400;
-                particle.style.setProperty('--random-x', `${randomX}px`);
-
-                document.body.appendChild(particle);
-
-                // Activer l'animation
-                requestAnimationFrame(() => {
-                    particle.classList.add('active');
-                });
-
-                // Nettoyer
-                setTimeout(() => {
-                    particle.remove();
-                }, 1500);
-            }, i * 30);
-        }
     }
 }
 

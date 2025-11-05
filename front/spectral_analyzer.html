@@ -3,118 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analyseur Spectral Vintage - Le Grand Cirque</title>
+    <title>Cirque Audio · Analyseur Spectral</title>
     <link rel="stylesheet" href="spectral_analyzer.css">
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <header class="circus-header">
-            <div class="ornament-top"></div>
-            <h1 class="circus-title">Le Grand Analyseur Spectral</h1>
-            <p class="circus-subtitle">Machine d'Analyse Sonore · Modèle 1925</p>
-            <div class="ornament-bottom"></div>
+        <!-- Hero Section -->
+        <header class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Cirque<span class="gradient-text">Audio</span></h1>
+                <p class="hero-subtitle">L'analyseur spectral qui donne vie à votre voix</p>
+            </div>
         </header>
 
-        <!-- Control Panel - Dashboard Vintage -->
-        <div class="control-panel">
-            <div class="dashboard-panel">
-                <h2 class="panel-title">Panneau de Contrôle</h2>
+        <!-- Control Panel - Clean Modern Design -->
+        <section class="control-section">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="section-title">Studio d'enregistrement</h2>
+                    <p class="section-description">Capturez et visualisez votre performance</p>
+                </div>
 
-                <!-- Wood Panel Background with brass elements -->
-                <div class="wood-panel">
-                    <!-- Decorative brass screws in corners -->
-                    <div class="brass-screw top-left"></div>
-                    <div class="brass-screw top-right"></div>
-                    <div class="brass-screw bottom-left"></div>
-                    <div class="brass-screw bottom-right"></div>
-
-                    <!-- Left Column: REC/STOP + État -->
-                    <div class="left-column">
-                        <!-- Main Toggle Switch REC/STOP (Bouton à cran) avec LED -->
-                        <div class="rec-row">
-                            <div class="engraved-label top">REC</div>
-                            <!-- Status indicator light (LED avec pulse) -->
-                            <div class="status-rec" id="statusLight">
-                                <div class="status-rec-core"></div>
-                            </div>
+                <div class="control-grid">
+                    <!-- Recording Control -->
+                    <div class="control-item">
+                        <div class="control-label">
+                            <span class="label-text">Enregistrement</span>
+                            <div class="status-indicator" id="statusLight"></div>
                         </div>
-
-                        <div class="toggle-switch-container">
-                            <div class="toggle-detent" id="mainToggle"></div>
-                        </div>
-
-                        <!-- Name buttons -->
-                        <div class="name-buttons-container">
-                            <div class="name-button-item">
-                                <div class="toggle-circular small" data-name="TOM"></div>
-                                <div class="engraved-label small">TOM</div>
-                            </div>
-                            <div class="name-button-item">
-                                <div class="toggle-circular small" data-name="ANAÏS"></div>
-                                <div class="engraved-label small">ANAÏS</div>
-                            </div>
-                            <div class="name-button-item">
-                                <div class="toggle-circular small" data-name="MARGOT"></div>
-                                <div class="engraved-label small">MARGOT</div>
-                            </div>
-                            <div class="name-button-item">
-                                <div class="toggle-circular small" data-name="GEORGES"></div>
-                                <div class="engraved-label small">GEORGES</div>
-                            </div>
-                        </div>
+                        <button class="modern-toggle" id="mainToggle">
+                            <span class="toggle-icon">●</span>
+                        </button>
                     </div>
 
-                    <!-- Center: Audio Visualization (Waveform) -->
-                    <div class="circular-gauge-container">
-                        <div class="audio-viz-container">
-                            <canvas id="waveformCanvas" width="170" height="170"></canvas>
-                        </div>
+                    <!-- Waveform Visualization -->
+                    <div class="waveform-card">
+                        <canvas id="waveformCanvas" width="400" height="200"></canvas>
                     </div>
 
-                    <!-- Right Column: Analyze Button + LED verte -->
-                    <div class="right-column">
-                        <div class="rotary-knob-container">
-                            <!-- LED verte pour indiquer disponibilité -->
-                            <div class="analyze-ready-indicator" id="analyzeReady">
-                                <div class="led-green"></div>
-                            </div>
-                            <div class="engraved-label knob">ANALYSE</div>
-                            <div class="analyze-press" id="analyzeKnob"></div>
+                    <!-- Analyze Control -->
+                    <div class="control-item">
+                        <div class="control-label">
+                            <span class="label-text">Analyse</span>
+                            <div class="ready-indicator" id="analyzeReady"></div>
                         </div>
+                        <button class="analyze-button" id="analyzeKnob">
+                            <span class="button-text">Analyser</span>
+                        </button>
                     </div>
                 </div>
+
+                <!-- Name Tags -->
+                <div class="tags-container">
+                    <button class="tag-button" data-name="TOM">Tom</button>
+                    <button class="tag-button" data-name="ANAÏS">Anaïs</button>
+                    <button class="tag-button" data-name="MARGOT">Margot</button>
+                    <button class="tag-button" data-name="GEORGES">Georges</button>
+                </div>
             </div>
-        </div>
+        </section>
 
         <!-- Spectrogram Display -->
-        <div class="spectrogram-panel" id="spectrogramPanel">
-            <div class="panel-frame">
-                <h2 class="panel-title">Fenêtre d'Observation Spectrale</h2>
-                <div class="viewing-window">
-                    <div class="axis-label y-axis">Fréquence (Hz)</div>
-                    <div class="axis-label x-axis">Temps (secondes)</div>
-                    <canvas id="spectrogramCanvas"></canvas>
-                    <div class="glass-overlay"></div>
+        <section class="spectrogram-section" id="spectrogramPanel">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="section-title">Spectrogramme</h2>
+                    <p class="status-text" id="machineStatus">En attente</p>
                 </div>
-                <div class="machine-footer">
-                    <div class="gauge">
-                        <div class="gauge-needle"></div>
-                    </div>
-                    <p class="machine-status" id="machineStatus">Machine au repos</p>
-                    <div class="gauge">
-                        <div class="gauge-needle"></div>
-                    </div>
+                <div class="spectrogram-container">
+                    <canvas id="spectrogramCanvas"></canvas>
                 </div>
             </div>
-        </div>
+        </section>
 
         <!-- Footer -->
-        <footer class="circus-footer">
-            <p>Breveté · Société des Machines Acoustiques · Paris MCMXXV</p>
+        <footer class="footer">
+            <p class="footer-text">Conçu avec passion · 2025</p>
         </footer>
     </div>
 
-    <script src="spectral_analyzer.js?v=3"></script>
+    <script src="spectral_analyzer.js?v=4"></script>
 </body>
 </html>

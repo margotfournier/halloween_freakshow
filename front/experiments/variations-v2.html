@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variations V2 - Analyseur Spectral</title>
+    <link rel="stylesheet" href="spectral_analyzer.css">
+    <style>
+        .test-section {
+            margin: 40px 0;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 3px solid var(--or-fonce);
+            border-radius: 15px;
+        }
+
+        .test-section h3 {
+            font-family: 'Cinzel Decorative', serif;
+            color: var(--or-brillant);
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+
+        .variations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .variation-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .variation-label {
+            font-family: 'Playfair Display', serif;
+            color: var(--creme);
+            font-size: 1.1em;
+            text-align: center;
+            font-style: italic;
+        }
+
+        /* ===== NOUVELLES VARIATIONS BOUTONS ON/OFF ===== */
+
+        /* Toggle 6: Bouton rocker Marshall */
+        .toggle-marshall {
+            width: 140px;
+            height: 90px;
+            border-radius: 10px;
+            background: #0b0b0b;
+            padding: 12px;
+            box-shadow: inset 0 -6px 18px rgba(0,0,0,0.6), 0 8px 24px rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toggle-marshall-label {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--or-fonce);
+            letter-spacing: 0.06em;
+        }
+
+        .toggle-marshall-switch {
+            width: 66px;
+            height: 28px;
+            border-radius: 16px;
+            background: linear-gradient(180deg, #272829, #151515);
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .toggle-marshall-knob {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(180deg, #fff, #ddd);
+            box-shadow: 0 3px 8px rgba(2, 6, 23, 0.6);
+            transform: translateX(0) rotate(-8deg);
+            transition: transform 0.22s cubic-bezier(0.2, 0.9, 0.2, 1);
+        }
+
+        .toggle-marshall-switch.active {
+            justify-content: flex-end;
+        }
+
+        .toggle-marshall-switch.active .toggle-marshall-knob {
+            transform: translateX(0) rotate(8deg);
+            background: linear-gradient(180deg, #fff7e6, #f2e6c9);
+        }
+
+        /* Toggle 7: Curseur horizontal */
+        .toggle-slider {
+            width: 100px;
+            height: 50px;
+            background: linear-gradient(180deg, rgb(50, 35, 25), rgb(35, 25, 18));
+            border-radius: 25px;
+            position: relative;
+            cursor: pointer;
+            box-shadow: inset 0 4px 12px rgba(0,0,0,0.8), 0 6px 18px rgba(0,0,0,0.7);
+            padding: 5px;
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle at 30% 30%, var(--or-brillant), var(--cuivre));
+            border-radius: 50%;
+            top: 5px;
+            left: 5px;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.7), inset 0 2px 6px rgba(255,255,255,0.3);
+        }
+
+        .toggle-slider.active::before {
+            left: 55px;
+            background: radial-gradient(circle at 30% 30%, #ff6666, #cc0000);
+            box-shadow: 0 0 20px rgba(255, 50, 50, 0.7), inset 0 2px 6px rgba(255,255,255,0.2);
+        }
+
+        /* Toggle 8: Bouton à cran (détente) */
+        .toggle-detent {
+            width: 70px;
+            height: 70px;
+            background: conic-gradient(
+                rgb(212, 175, 55) 0deg,
+                rgb(184, 134, 11) 90deg,
+                rgb(139, 101, 8) 180deg,
+                rgb(184, 134, 11) 270deg,
+                rgb(212, 175, 55) 360deg
+            );
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+            transition: transform 0.15s ease;
+        }
+
+        .toggle-detent::before {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle at 35% 35%, rgb(60, 60, 60), rgb(25, 25, 25));
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: inset 0 4px 12px rgba(0,0,0,0.8);
+        }
+
+        .toggle-detent::after {
+            content: '○';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8em;
+            color: var(--or-fonce);
+            z-index: 1;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-detent.active {
+            transform: rotate(45deg);
+        }
+
+        .toggle-detent.active::after {
+            content: '●';
+            color: var(--or-brillant);
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        }
+
+        /* Toggle 9: Flip switch vintage */
+        .toggle-flip {
+            width: 50px;
+            height: 80px;
+            perspective: 1000px;
+        }
+
+        .toggle-flip-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            cursor: pointer;
+        }
+
+        .toggle-flip.active .toggle-flip-inner {
+            transform: rotateX(180deg);
+        }
+
+        .toggle-flip-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.7);
+        }
+
+        .toggle-flip-front {
+            background: linear-gradient(180deg, var(--or-brillant), var(--or-fonce));
+            color: #000;
+        }
+
+        .toggle-flip-back {
+            background: linear-gradient(180deg, #ff4444, #cc0000);
+            color: #fff;
+            transform: rotateX(180deg);
+        }
+
+        /* Toggle 10: Gâchette */
+        .toggle-trigger {
+            width: 80px;
+            height: 100px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .toggle-trigger-body {
+            width: 60px;
+            height: 70px;
+            background: linear-gradient(180deg, rgb(60, 40, 25), rgb(40, 25, 15));
+            border-radius: 10px;
+            position: absolute;
+            bottom: 0;
+            left: 10px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.7);
+        }
+
+        .toggle-trigger-lever {
+            width: 40px;
+            height: 50px;
+            background: linear-gradient(180deg, var(--or-brillant), var(--cuivre));
+            border-radius: 5px 5px 15px 15px;
+            position: absolute;
+            bottom: 30px;
+            left: 20px;
+            transform-origin: 50% 0%;
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+        }
+
+        .toggle-trigger.active .toggle-trigger-lever {
+            transform: rotate(25deg);
+            background: linear-gradient(180deg, #ff5555, #cc0000);
+        }
+
+        /* ===== NOUVELLES VARIATIONS BOUTON ANALYSE ===== */
+
+        /* Analyse 5: Bouton pressoir */
+        .analyze-press {
+            width: 90px;
+            height: 90px;
+            background: radial-gradient(circle, rgb(60, 60, 60), rgb(30, 30, 30));
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+            transition: all 0.15s ease;
+        }
+
+        .analyze-press::before {
+            content: '';
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle at 30% 30%, var(--or-brillant), var(--or-fonce));
+            border-radius: 50%;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6), inset 0 2px 8px rgba(255,255,255,0.3);
+            transition: all 0.15s ease;
+        }
+
+        .analyze-press:active {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+        }
+
+        .analyze-press:active::before {
+            top: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        }
+
+        /* Analyse 6: Bouton à pousser avec voyant */
+        .analyze-indicator {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(180deg, rgb(40, 40, 40), rgb(20, 20, 20));
+            border-radius: 12px;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.7), inset 0 2px 8px rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .analyze-indicator-light {
+            width: 15px;
+            height: 15px;
+            background: radial-gradient(circle, rgb(60, 60, 60), rgb(30, 30, 30));
+            border-radius: 50%;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
+            transition: all 0.3s ease;
+        }
+
+        .analyze-indicator:hover .analyze-indicator-light {
+            background: radial-gradient(circle, rgba(0, 255, 150, 1), rgba(0, 255, 150, 0.4));
+            box-shadow: 0 0 15px rgba(0, 255, 150, 0.6);
+        }
+
+        .analyze-indicator-btn {
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle at 30% 30%, var(--or-brillant), var(--cuivre));
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6), inset 0 2px 6px rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            transition: transform 0.1s ease;
+        }
+
+        .analyze-indicator:active .analyze-indicator-btn {
+            transform: scale(0.95);
+        }
+
+        /* Analyse 7: Manivelle */
+        .analyze-crank {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .analyze-crank-base {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, rgb(60, 60, 60), rgb(30, 30, 30));
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.7), inset 0 2px 8px rgba(0,0,0,0.6);
+        }
+
+        .analyze-crank-arm {
+            width: 80px;
+            height: 6px;
+            background: linear-gradient(90deg, var(--cuivre), var(--or-fonce));
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: 0% 50%;
+            transform: translate(0, -50%);
+            border-radius: 3px;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .analyze-crank-handle {
+            width: 25px;
+            height: 25px;
+            background: radial-gradient(circle at 30% 30%, var(--or-brillant), var(--or-fonce));
+            border-radius: 50%;
+            position: absolute;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.6);
+        }
+
+        .analyze-crank:hover .analyze-crank-arm {
+            transform: translate(0, -50%) rotate(360deg);
+        }
+
+        /* Analyse 8: Bouton à clé */
+        .analyze-key {
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgb(60, 60, 60), rgb(30, 30, 30));
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.7), inset 0 2px 8px rgba(0,0,0,0.6);
+        }
+
+        .analyze-key-slot {
+            width: 4px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 2px;
+        }
+
+        .analyze-key-icon {
+            width: 40px;
+            height: 12px;
+            background: linear-gradient(90deg, var(--or-brillant), var(--cuivre));
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(0deg);
+            border-radius: 2px;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        }
+
+        .analyze-key-icon::before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, var(--or-brillant), var(--or-fonce));
+            border-radius: 50%;
+            position: absolute;
+            left: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .analyze-key:hover .analyze-key-icon {
+            transform: translate(-50%, -50%) rotate(90deg);
+        }
+
+        /* ===== VISUALISATION AUDIO: BARGRAPH ===== */
+        .audio-viz-container {
+            width: 100%;
+            height: 120px;
+            background: #000;
+            border: 2px solid var(--or-fonce);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .viz-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 10px;
+            gap: 3px;
+            height: 100%;
+        }
+
+        .viz-bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--or-brillant), var(--or-fonce));
+            border-radius: 2px;
+            animation: barPulse 0.8s ease-in-out infinite;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+        }
+
+        @keyframes barPulse {
+            0%, 100% { height: 30%; opacity: 0.7; }
+            50% { height: 80%; opacity: 1; }
+        }
+
+        /* ===== INDICATEUR REC (inspiré de test.html) ===== */
+        .status-rec {
+            width: 84px;
+            height: 84px;
+            background: linear-gradient(180deg, #121416, #0a0b0d);
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .status-rec-core {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(180deg, #2b2b2b, #111111);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        .status-rec.active .status-rec-core {
+            background: radial-gradient(circle at 30% 30%, #ff8b8b, #ff4b4b);
+            animation: recPulse 1.2s infinite;
+        }
+
+        @keyframes recPulse {
+            0% {
+                box-shadow: 0 0 0 6px rgba(255,75,75,0.08);
+            }
+            50% {
+                box-shadow: 0 0 0 18px rgba(255,75,75,0.02);
+            }
+            100% {
+                box-shadow: 0 0 0 6px rgba(255,75,75,0.08);
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="circus-header">
+            <div class="ornament-top"></div>
+            <h1 class="circus-title">Variations V2</h1>
+            <p class="circus-subtitle">Nouvelles Explorations · Interface Raffinée</p>
+            <div class="ornament-bottom"></div>
+        </header>
+
+        <!-- Section: Nouvelles variations ON/OFF -->
+        <div class="test-section">
+            <h3>⚙ Nouvelles Variations ON/OFF</h3>
+            <div class="variations-grid">
+                <div class="variation-item">
+                    <div class="toggle-marshall" onclick="this.querySelector('.toggle-marshall-switch').classList.toggle('active')">
+                        <div class="toggle-marshall-label">POWER</div>
+                        <div class="toggle-marshall-switch">
+                            <div class="toggle-marshall-knob"></div>
+                        </div>
+                    </div>
+                    <div class="variation-label">Rocker Marshall</div>
+                </div>
+                <div class="variation-item">
+                    <div class="toggle-slider" onclick="this.classList.toggle('active')"></div>
+                    <div class="variation-label">Curseur Horizontal</div>
+                </div>
+                <div class="variation-item">
+                    <div class="toggle-detent" onclick="this.classList.toggle('active')"></div>
+                    <div class="variation-label">Bouton à Cran</div>
+                </div>
+                <div class="variation-item">
+                    <div class="toggle-flip" onclick="this.classList.toggle('active')">
+                        <div class="toggle-flip-inner">
+                            <div class="toggle-flip-face toggle-flip-front">ON</div>
+                            <div class="toggle-flip-face toggle-flip-back">OFF</div>
+                        </div>
+                    </div>
+                    <div class="variation-label">Flip Switch</div>
+                </div>
+                <div class="variation-item">
+                    <div class="toggle-trigger" onclick="this.classList.toggle('active')">
+                        <div class="toggle-trigger-body"></div>
+                        <div class="toggle-trigger-lever"></div>
+                    </div>
+                    <div class="variation-label">Gâchette</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Visualisation Audio (Bargraph préféré) -->
+        <div class="test-section">
+            <h3>🎵 Visualisation Audio - Bargraph</h3>
+            <div class="variations-grid">
+                <div class="variation-item" style="grid-column: 1 / -1;">
+                    <div class="audio-viz-container viz-bars">
+                        <div class="viz-bar" style="animation-delay: 0s;"></div>
+                        <div class="viz-bar" style="animation-delay: 0.1s;"></div>
+                        <div class="viz-bar" style="animation-delay: 0.2s;"></div>
+                        <div class="viz-bar" style="animation-delay: 0.3s;"></div>
+                        <div class="viz-bar" style="animation-delay: 0.4s;"></div>
+                        <div class="viz-bar" style="animation-delay: 0.5s;"></div>
+                        <div class="viz-bar" style="animation-delay: 0.4s;"></div>
+                        <div class="viz-bar" style="animation-delay: 0.3s;"></div>
+                        <div class="viz-bar" style="animation-delay: 0.2s;"></div>
+                        <div class="viz-bar" style="animation-delay: 0.1s;"></div>
+                        <div class="viz-bar" style="animation-delay: 0s;"></div>
+                        <div class="viz-bar" style="animation-delay: 0.15s;"></div>
+                        <div class="viz-bar" style="animation-delay: 0.3s;"></div>
+                        <div class="viz-bar" style="animation-delay: 0.45s;"></div>
+                        <div class="viz-bar" style="animation-delay: 0.25s;"></div>
+                    </div>
+                    <div class="variation-label">Bargraph Animé avec Glow</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Nouvelles variations Analyse -->
+        <div class="test-section">
+            <h3>⚡ Nouvelles Variations Bouton Analyse</h3>
+            <div class="variations-grid">
+                <div class="variation-item">
+                    <div class="analyze-press"></div>
+                    <div class="variation-label">Bouton Pressoir</div>
+                </div>
+                <div class="variation-item">
+                    <div class="analyze-indicator">
+                        <div class="analyze-indicator-light"></div>
+                        <div class="analyze-indicator-btn">▶</div>
+                    </div>
+                    <div class="variation-label">Avec Voyant</div>
+                </div>
+                <div class="variation-item">
+                    <div class="analyze-crank">
+                        <div class="analyze-crank-base"></div>
+                        <div class="analyze-crank-arm">
+                            <div class="analyze-crank-handle"></div>
+                        </div>
+                    </div>
+                    <div class="variation-label">Manivelle</div>
+                </div>
+                <div class="variation-item">
+                    <div class="analyze-key">
+                        <div class="analyze-key-slot"></div>
+                        <div class="analyze-key-icon"></div>
+                    </div>
+                    <div class="variation-label">Bouton à Clé</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Indicateur REC (inspiré de test.html) -->
+        <div class="test-section">
+            <h3>💡 Indicateur REC avec Pulse</h3>
+            <div class="variations-grid">
+                <div class="variation-item">
+                    <div class="status-rec" onclick="this.classList.toggle('active')">
+                        <div class="status-rec-core"></div>
+                    </div>
+                    <div class="variation-label">LED avec Pulse Rouge</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="circus-footer">
+            <p>Laboratoire d'Expérimentations Visuelles · Prototypes V2 · 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        // Effet scroll
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+            document.body.classList.add('scrolling');
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                document.body.classList.remove('scrolling');
+            }, 150);
+        });
+
+        // Apparition des sections au scroll
+        const sections = document.querySelectorAll('.test-section');
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(50px)';
+            section.style.transition = 'all 0.8s ease-out';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

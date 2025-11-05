@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Variations de Touches - Style Cirque Vintage</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Cinzel+Decorative:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --rouge-cirque: #8B0000;
+      --rouge-profond: #A52A2A;
+      --bordeaux-noir: #2d0a0a;
+      --or-brillant: #FFD700;
+      --or-fonce: #DAA520;
+      --cuivre: #B8860B;
+      --creme: #FFF8DC;
+      --ivoire: #FFFFF0;
+      --noir: #000000;
+      --bois: rgb(58, 35, 25);
+      --bois-fonce: rgb(40, 25, 15);
+    }
+
+    body {
+      background: radial-gradient(ellipse at center, var(--rouge-profond) 0%, var(--bordeaux-noir) 60%, var(--noir) 100%);
+      background-attachment: fixed;
+      color: var(--creme);
+      font-family: 'Playfair Display', Georgia, serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px;
+      flex-direction: column;
+      gap: 3rem;
+      position: relative;
+    }
+
+    /* Velvet texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px),
+        repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
+      opacity: 0.6;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      font-family: 'Cinzel Decorative', serif;
+      color: var(--or-brillant);
+      text-align: center;
+      font-size: 3.5em;
+      margin-bottom: 20px;
+      text-shadow:
+        3px 3px 0px var(--cuivre),
+        6px 6px 0px var(--or-fonce),
+        9px 9px 15px rgba(0, 0, 0, 0.9),
+        0 0 40px rgba(255, 215, 0, 0.8);
+      letter-spacing: 6px;
+      text-transform: uppercase;
+    }
+
+    .section {
+      margin-bottom: 40px;
+      width: 100%;
+      max-width: 1000px;
+      background: radial-gradient(ellipse at top, rgba(139, 0, 0, 0.85) 0%, rgba(45, 10, 10, 0.95) 100%);
+      border: 8px double var(--or-brillant);
+      border-radius: 25px;
+      padding: 40px;
+      box-shadow:
+        0 0 50px rgba(255, 215, 0, 0.3),
+        0 20px 60px rgba(0, 0, 0, 0.9),
+        inset 0 0 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .section h2 {
+      font-family: 'Cinzel Decorative', serif;
+      color: var(--or-brillant);
+      margin-bottom: 30px;
+      font-size: 2em;
+      text-align: center;
+      text-shadow:
+        2px 2px 0px var(--or-fonce),
+        4px 4px 8px rgba(0, 0, 0, 0.9),
+        0 0 30px rgba(255, 215, 0, 0.6);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    .keys-container {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .key-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .key-label {
+      font-size: 1em;
+      color: var(--or-fonce);
+      text-align: center;
+      font-family: 'Cinzel Decorative', serif;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+
+    /* ===== VARIATION 1: Touche Ivoire Vintage ===== */
+    .piano-key {
+      width: 50px;
+      height: 180px;
+      background: linear-gradient(180deg, var(--ivoire) 0%, var(--creme) 100%);
+      border: 3px solid var(--cuivre);
+      border-radius: 0 0 10px 10px;
+      cursor: pointer;
+      box-shadow:
+        0 6px 12px rgba(0,0,0,0.8),
+        inset 0 -5px 15px rgba(184, 134, 11, 0.2);
+      transition: all 0.1s ease;
+      position: relative;
+    }
+
+    .piano-key::after {
+      content: '';
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 35px;
+      height: 4px;
+      background: var(--cuivre);
+      border-radius: 2px;
+      box-shadow: 0 0 8px rgba(184, 134, 11, 0.6);
+    }
+
+    .piano-key:active {
+      transform: translateY(5px);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.8), inset 0 2px 10px rgba(0,0,0,0.3);
+      background: linear-gradient(180deg, var(--creme) 0%, #e8dcc0 100%);
+    }
+
+    /* ===== VARIATION 2: Touche Ébène Cirque ===== */
+    .piano-key-black {
+      width: 38px;
+      height: 120px;
+      background: linear-gradient(180deg, #1a1a1a 0%, var(--noir) 100%);
+      border: 3px solid var(--or-fonce);
+      border-radius: 0 0 8px 8px;
+      cursor: pointer;
+      box-shadow:
+        0 6px 12px rgba(0,0,0,0.9),
+        inset 0 2px 6px rgba(255, 215, 0, 0.15);
+      transition: all 0.1s ease;
+    }
+
+    .piano-key-black:active {
+      transform: translateY(5px);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.9), inset 0 2px 8px rgba(0,0,0,0.6);
+      background: linear-gradient(180deg, #0a0a0a 0%, var(--noir) 100%);
+    }
+
+    /* ===== VARIATION 3: Bouton Laiton Carré ===== */
+    .synth-key {
+      width: 70px;
+      height: 70px;
+      background: conic-gradient(
+        rgb(212, 175, 55) 0deg,
+        rgb(184, 134, 11) 90deg,
+        rgb(139, 101, 8) 180deg,
+        rgb(184, 134, 11) 270deg,
+        rgb(212, 175, 55) 360deg
+      );
+      border: 4px solid var(--cuivre);
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow:
+        0 8px 20px rgba(0,0,0,0.8),
+        inset 0 2px 8px rgba(255, 215, 0, 0.3);
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5em;
+      font-weight: bold;
+      font-family: 'Cinzel Decorative', serif;
+      color: rgba(0, 0, 0, 0.7);
+      text-shadow:
+        0 1px 0 rgba(255, 215, 0, 0.6),
+        0 -1px 0 rgba(0, 0, 0, 0.8);
+      position: relative;
+    }
+
+    .synth-key::before {
+      content: '';
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: radial-gradient(circle at 35% 35%, rgb(60, 60, 60), rgb(25, 25, 25));
+      border-radius: 50%;
+      box-shadow: inset 0 4px 12px rgba(0,0,0,0.8);
+    }
+
+    .synth-key:active {
+      transform: translateY(5px) rotate(45deg);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.8), inset 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    /* ===== VARIATION 4: Bouton Velours Rouge ===== */
+    .pad-button {
+      width: 85px;
+      height: 85px;
+      background: radial-gradient(circle at 30% 30%, var(--rouge-cirque), var(--bordeaux-noir));
+      border: 5px solid var(--or-brillant);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow:
+        0 10px 25px rgba(0,0,0,0.8),
+        inset 0 -5px 15px rgba(0,0,0,0.5),
+        0 0 30px rgba(255, 215, 0, 0.3);
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .pad-button::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 18px;
+      width: 35px;
+      height: 35px;
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.4), transparent);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .pad-button:active {
+      transform: scale(0.93);
+      box-shadow:
+        0 5px 15px rgba(0,0,0,0.9),
+        inset 0 5px 20px rgba(0,0,0,0.7),
+        0 0 50px rgba(255, 215, 0, 0.6);
+    }
+
+    /* ===== VARIATION 5: Bouton Bois Cirque ===== */
+    .arcade-button {
+      width: 75px;
+      height: 75px;
+      background:
+        linear-gradient(90deg,
+          rgba(58, 35, 25, 0.3) 0%,
+          rgba(68, 40, 28, 0.4) 25%,
+          rgba(58, 35, 25, 0.3) 50%,
+          rgba(68, 40, 28, 0.4) 75%,
+          rgba(58, 35, 25, 0.3) 100%),
+        radial-gradient(ellipse at center, rgb(82, 52, 38) 0%, rgb(58, 35, 25) 100%);
+      background-size: 8px 100%, 100% 100%;
+      border: 4px solid var(--cuivre);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow:
+        0 8px 20px rgba(0,0,0,0.8),
+        inset 0 0 15px rgba(0, 0, 0, 0.6);
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .arcade-button::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: radial-gradient(circle, rgb(212, 175, 55), rgb(139, 101, 8));
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow:
+        inset 0 2px 4px rgba(255, 255, 255, 0.4),
+        0 0 10px rgba(184, 134, 11, 0.6);
+    }
+
+    .arcade-button:active {
+      transform: scale(0.94);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.8), inset 0 4px 20px rgba(0,0,0,0.7);
+    }
+
+    /* ===== VARIATION 6: Plaque Laiton Gravée ===== */
+    .key-rectangle {
+      width: 110px;
+      height: 55px;
+      background: linear-gradient(180deg,
+        rgb(212, 175, 55) 0%,
+        rgb(184, 134, 11) 50%,
+        rgb(139, 101, 8) 100%);
+      border: 4px solid var(--or-fonce);
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow:
+        0 8px 16px rgba(0,0,0,0.8),
+        inset 0 -4px 8px rgba(0,0,0,0.4);
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-family: 'Cinzel Decorative', serif;
+      color: rgba(0, 0, 0, 0.8);
+      text-transform: uppercase;
+      font-size: 1em;
+      letter-spacing: 3px;
+      text-shadow:
+        0 1px 0 rgba(255, 215, 0, 0.4),
+        0 -1px 0 rgba(0, 0, 0, 0.8);
+    }
+
+    .key-rectangle:active {
+      transform: translateY(6px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.8), inset 0 4px 12px rgba(0,0,0,0.6);
+      background: linear-gradient(180deg,
+        rgb(184, 134, 11) 0%,
+        rgb(139, 101, 8) 50%,
+        rgb(100, 70, 5) 100%);
+    }
+
+    /* ===== VARIATION 7: Bouton Pressoir Doré ===== */
+    .led-key {
+      width: 75px;
+      height: 75px;
+      background: radial-gradient(circle, rgb(60, 60, 60), rgb(30, 30, 30));
+      border: 4px solid var(--cuivre);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.8);
+      transition: all 0.15s ease;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .led-key::before {
+      content: '';
+      width: 58px;
+      height: 58px;
+      background: radial-gradient(circle at 30% 30%, var(--or-brillant), var(--or-fonce));
+      border-radius: 50%;
+      box-shadow:
+        0 4px 15px rgba(0,0,0,0.6),
+        inset 0 2px 8px rgba(255,255,255,0.3);
+    }
+
+    .led-key:active::before {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6), inset 0 4px 12px rgba(0,0,0,0.4);
+      transform: translateY(3px);
+    }
+
+    .led-key:active {
+      box-shadow: 0 4px 10px rgba(0,0,0,0.8);
+    }
+
+    /* ===== VARIATION 8: Bouton Velours Étoile ===== */
+    .chrome-key {
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle at center, var(--bordeaux-noir), var(--noir));
+      border: 5px solid var(--or-brillant);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow:
+        0 10px 25px rgba(0,0,0,0.9),
+        inset 0 -5px 15px rgba(139, 0, 0, 0.5),
+        0 0 40px rgba(255, 215, 0, 0.4);
+      transition: all 0.15s ease;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chrome-key::before {
+      content: '✦';
+      font-size: 2.5em;
+      color: var(--or-brillant);
+      text-shadow:
+        0 0 20px var(--or-brillant),
+        0 0 40px rgba(255, 215, 0, 0.6);
+      animation: sparkle 2s ease-in-out infinite;
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+      50% { opacity: 0.7; transform: scale(1.1) rotate(45deg); }
+    }
+
+    .chrome-key:active {
+      transform: scale(0.92);
+      box-shadow:
+        0 5px 15px rgba(0,0,0,0.9),
+        inset 0 5px 20px rgba(0,0,0,0.7),
+        0 0 60px rgba(255, 215, 0, 0.7);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⭐ Le Grand Carrousel des Touches ⭐</h1>
+
+    <div class="section">
+      <h2>🎪 Touches Nobles</h2>
+    <div class="keys-container">
+        <div class="key-item">
+          <div class="piano-key"></div>
+          <div class="key-label">Ivoire</div>
+        </div>
+        <div class="key-item">
+          <div class="piano-key-black"></div>
+          <div class="key-label">Ébène</div>
+        </div>
+        <div class="key-item">
+          <div class="piano-key"></div>
+          <div class="key-label">Do</div>
+        </div>
+        <div class="key-item">
+          <div class="piano-key-black"></div>
+          <div class="key-label">Do#</div>
+        </div>
+        <div class="key-item">
+          <div class="piano-key"></div>
+          <div class="key-label">Ré</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>🎭 Boutons Mécaniques</h2>
+      <div class="keys-container">
+        <div class="key-item">
+          <div class="synth-key">A</div>
+          <div class="key-label">Laiton</div>
+        </div>
+        <div class="key-item">
+          <div class="synth-key">B</div>
+          <div class="key-label">Laiton</div>
+        </div>
+        <div class="key-item">
+          <div class="key-rectangle">PLAY</div>
+          <div class="key-label">Plaque</div>
+        </div>
+        <div class="key-item">
+          <div class="key-rectangle">STOP</div>
+          <div class="key-label">Plaque</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>✨ Boutons d'Apparat</h2>
+      <div class="keys-container">
+        <div class="key-item">
+          <div class="pad-button"></div>
+          <div class="key-label">Velours</div>
+        </div>
+        <div class="key-item">
+          <div class="arcade-button"></div>
+          <div class="key-label">Bois</div>
+        </div>
+        <div class="key-item">
+          <div class="led-key"></div>
+          <div class="key-label">Pressoir</div>
+        </div>
+        <div class="key-item">
+          <div class="chrome-key"></div>
+          <div class="key-label">Étoile</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Ajouter un son au clic (optionnel)
+    document.querySelectorAll('[class*="-key"], [class*="-button"]').forEach(key => {
+      key.addEventListener('click', () => {
+        console.log('Touche pressée:', key.className);
+        // Ajouter une petite animation
+        key.style.filter = 'brightness(1.3)';
+        setTimeout(() => {
+          key.style.filter = 'brightness(1)';
+        }, 100);
+      });
+    });
+  </script>
+</body>
+</html>
