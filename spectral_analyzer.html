@@ -550,15 +550,15 @@
       </div>
 
       <div class="rituals">
-        <button class="ticket-button" data-tone="340">
+        <button class="ticket-button" data-tone="340" data-sound="synapse">
           Synapse lumineuse
           <span class="badge">live</span>
         </button>
-        <button class="ticket-button" data-tone="230">
+        <button class="ticket-button" data-tone="230" data-sound="billet">
           Billet mystique
           <span class="badge">entrée</span>
         </button>
-        <button class="switch-button" data-tone="410">
+        <button class="switch-button" data-tone="410" data-sound="camionette">
           Mode immersion
           <span class="badge">4d</span>
         </button>
@@ -583,6 +583,8 @@
     const buttons = document.querySelectorAll('button');
     let audioCtx;
     const audioBufferCache = {};
+    let currentSource = null;
+    let currentButton = null;
 
     function getAudioContext() {
       if (!audioCtx) {
@@ -635,7 +637,7 @@
         audioBufferCache[slug] = null;
         return null;
       }
-      const extensions = ['.mp3', '.wav', '.ogg'];
+      const extensions = ['.opus', '.mp3', '.wav', '.ogg'];
       for (const ext of extensions) {
         const url = `sounds/${slug}${ext}`;
         try {
@@ -656,10 +658,30 @@
     async function triggerButtonSound(button) {
       const slug = button.dataset.sound;
       const freq = Number(button.dataset.tone) || 240;
+
+      // Si on reclique sur le même bouton, on met en pause
+      if (currentButton === button && currentSource) {
+        currentSource.stop();
+        currentSource = null;
+        currentButton = null;
+        button.classList.remove('is-pressed');
+        return;
+      }
+
+      // Si un autre son joue, on l'arrête
+      if (currentSource) {
+        currentSource.stop();
+        currentSource = null;
+        if (currentButton) {
+          currentButton.classList.remove('is-pressed');
+        }
+      }
+
       if (!slug) {
         playTactileTone(freq);
         return;
       }
+
       const buffer = await loadSample(slug);
       if (buffer) {
         const ctx = getAudioContext();
@@ -667,6 +689,18 @@
         source.buffer = buffer;
         source.connect(ctx.destination);
         source.start();
+
+        currentSource = source;
+        currentButton = button;
+
+        // Quand le son se termine naturellement
+        source.onended = () => {
+          if (currentSource === source) {
+            currentSource = null;
+            currentButton = null;
+            button.classList.remove('is-pressed');
+          }
+        };
       } else {
         playTactileTone(freq);
       }
@@ -676,7 +710,11 @@
       btn.addEventListener('click', () => {
         btn.classList.add('is-pressed');
         triggerButtonSound(btn);
-        setTimeout(() => btn.classList.remove('is-pressed'), 160);
+        setTimeout(() => {
+          if (currentButton !== btn) {
+            btn.classList.remove('is-pressed');
+          }
+        }, 160);
       });
     });
   </script>
