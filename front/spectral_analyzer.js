@@ -54,7 +54,7 @@ class SpectralAnalyzer {
     }
 
     setupNameButtons() {
-        const nameButtons = document.querySelectorAll('.tag-button');
+        const nameButtons = document.querySelectorAll('.voice-button');
         nameButtons.forEach(button => {
             button.addEventListener('click', () => {
                 button.classList.toggle('active');
@@ -62,14 +62,39 @@ class SpectralAnalyzer {
 
                 if (button.classList.contains('active')) {
                     this.activeNames.add(name);
+                    this.playClickSound();
                     this.createConfetti(button);
                 } else {
                     this.activeNames.delete(name);
+                    this.playClickSound();
                 }
 
                 console.log('Noms actifs:', Array.from(this.activeNames));
             });
         });
+    }
+
+    playClickSound() {
+        // Créer un son simple avec Web Audio API
+        if (!this.audioContext) {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+
+        // Son de clic élégant (deux notes rapides)
+        oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(1200, this.audioContext.currentTime + 0.05);
+
+        gainNode.gain.setValueAtTime(0.15, this.audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+
+        oscillator.start(this.audioContext.currentTime);
+        oscillator.stop(this.audioContext.currentTime + 0.1);
     }
 
     createConfetti(element) {

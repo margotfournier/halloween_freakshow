@@ -107,6 +107,17 @@
       pointer-events: none;
     }
 
+    .hero-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      align-items: stretch;
+    }
+
+    .hero-copy {
+      flex: 1 1 320px;
+    }
+
     .eyebrow {
       font-size: 0.85rem;
       text-transform: uppercase;
@@ -231,19 +242,19 @@
 
     .keypad {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
     }
 
     .keycap {
       position: relative;
       border: none;
-      border-radius: 22px;
-      padding: 22px 20px 26px;
+      border-radius: 24px;
+      padding: 24px 24px 32px;
       background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.35)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(0, 0, 0, 0.35)),
         radial-gradient(circle at top, rgba(255, 255, 255, 0.2), transparent 55%);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       color: var(--ink);
       text-align: left;
       cursor: pointer;
@@ -252,6 +263,10 @@
         inset 0 2px 0 rgba(255, 255, 255, 0.2);
       overflow: hidden;
       transition: transform 180ms ease, box-shadow 180ms ease, border 180ms;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .keycap::before {
@@ -272,24 +287,39 @@
       border-color: rgba(255, 255, 255, 0.35);
     }
 
-    .key-title {
-      font-size: 1.4rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin: 0 0 6px;
+    .key-header {
+      position: relative;
+      z-index: 1;
     }
 
-    .key-meta {
-      font-size: 0.8rem;
+    .key-title {
+      font-size: 1.5rem;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      letter-spacing: 0.25rem;
-      color: rgba(255, 255, 255, 0.6);
+      margin: 0;
+    }
+
+    .key-role {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4rem;
+      color: rgba(255, 255, 255, 0.7);
+      display: block;
+      margin-top: 4px;
+    }
+
+    .key-story {
+      position: relative;
+      z-index: 1;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.78);
     }
 
     .keycap .spikes {
       position: absolute;
-      inset: 10px;
-      border-radius: 16px;
+      inset: 12px;
+      border-radius: 18px;
       border: 1px dashed rgba(255, 255, 255, 0.1);
       pointer-events: none;
     }
@@ -381,25 +411,29 @@
   <div class="stage-glow stage-glow-right"></div>
   <main class="page">
     <header class="hero glass-panel">
-      <p class="eyebrow">Cabinet Freak Show · Précision Apple</p>
-      <h1>Le pupitre tactile du Cirque Magnétique</h1>
-      <p class="intro">
-        Interface hybride inspirée des panneaux Apple Pro mais infusée d'excentricité de chapiteau.
-        Toutes les touches réagissent, produisent un tintement modulaire et invitent à manipuler la matière sonore.
-      </p>
-      <div class="primary-actions">
-        <button class="action-button record" data-tone="215">
-          <span class="label">Enregistrer</span>
-          <span class="meta">Priorité absolue · canal A</span>
-        </button>
-        <button class="action-button analyze" data-tone="330">
-          <span class="label">Analyser</span>
-          <span class="meta">Spectres + anomalies</span>
-        </button>
-        <button class="action-button ghost" data-tone="150">
-          <span class="label">Brief tactique</span>
-          <span class="meta">traces &amp; notes</span>
-        </button>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Cabinet Freak Show · Précision Apple</p>
+          <h1>Le pupitre tactile du Cirque Magnétique</h1>
+          <p class="intro">
+            Interface hybride, rédigée comme un manifeste. Chaque bouton est un manifestant du freak show : halo
+            ultra-propre, folklore assumé, retour sonore immédiat.
+          </p>
+          <div class="primary-actions">
+            <button class="action-button record" data-tone="215" data-sound="enregistrer">
+              <span class="label">Enregistrer</span>
+              <span class="meta">Priorité absolue · canal A</span>
+            </button>
+            <button class="action-button analyze" data-tone="330" data-sound="analyser">
+              <span class="label">Analyser</span>
+              <span class="meta">Spectres + anomalies</span>
+            </button>
+            <button class="action-button ghost" data-tone="150">
+              <span class="label">Brief tactique</span>
+              <span class="meta">Traces &amp; notes</span>
+            </button>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -412,44 +446,92 @@
         <div class="panel-pill">Cliquer · écouter</div>
       </div>
       <div class="keypad">
-        <button class="keycap" data-tone="248">
-          <span class="key-title">Margot</span>
-          <span class="key-meta">Oracle solaire</span>
+        <button class="keycap" data-tone="188" data-sound="tom">
+          <div class="key-header">
+            <p class="key-title">Tom</p>
+            <span class="key-role">Le béton vivant</span>
+          </div>
+          <p class="key-story">
+            À 50 mètres sous terre, il soulève seul ce que dix hommes ne peuvent porter. Rails d'acier, poutres de béton,
+            machines de forage… Sa force et sa virilité sont devenues légendaires dans les profondeurs de Paris.
+          </p>
           <span class="spikes"></span>
         </button>
-        <button class="keycap" data-tone="198">
-          <span class="key-title">Tom</span>
-          <span class="key-meta">Tambour baryton</span>
+        <button class="keycap" data-tone="256" data-sound="anais">
+          <div class="key-header">
+            <p class="key-title">Anaïs</p>
+            <span class="key-role">L'illusionniste fatale</span>
+          </div>
+          <p class="key-story">
+            Elle fait léviter les corps, disparaître les objets et métamorphose la réalité en cauchemar éveillé. Son charme
+            captive, sa magie terrorise, son public ne respire plus.
+          </p>
           <span class="spikes"></span>
         </button>
-        <button class="keycap" data-tone="276">
-          <span class="key-title">Anaïs</span>
-          <span class="key-meta">Voltige spectrale</span>
+        <button class="keycap" data-tone="308" data-sound="margot">
+          <div class="key-header">
+            <p class="key-title">Margot</p>
+            <span class="key-role">L'oracle des ombres</span>
+          </div>
+          <p class="key-story">
+            Elle devine votre prénom, votre signe astrologique et votre petit-déjeuner en observant vos mains. Un soir elle
+            prédit trois mariages, cinq naissances… et tout s'est réalisé.
+          </p>
           <span class="spikes"></span>
         </button>
-        <button class="keycap" data-tone="305">
-          <span class="key-title">Georges</span>
-          <span class="key-meta">Griffe cristal</span>
+        <button class="keycap" data-tone="330" data-sound="georges">
+          <div class="key-header">
+            <p class="key-title">Georges</p>
+            <span class="key-role">La bête aux griffes d'acier</span>
+          </div>
+          <p class="key-story">
+            Capturé dans les montagnes maudites de Transylvanie, mi-félin mi-démon. Il a déchiqueté douze chasseurs avant
+            d'être enchaîné. Ses yeux luisent dans le noir, ses griffes ne pardonnent jamais.
+          </p>
           <span class="spikes"></span>
         </button>
-        <button class="keycap" data-tone="360">
-          <span class="key-title">Noor</span>
-          <span class="key-meta">Laser lunaire</span>
+        <button class="keycap" data-tone="360" data-sound="orfeo">
+          <div class="key-header">
+            <p class="key-title">Orféo</p>
+            <span class="key-role">Le ventriloque sidéral</span>
+          </div>
+          <p class="key-story">
+            Ses marionnettes sont sculptées dans la pierre météorique et parlent à contretemps. Elles révèlent vos secrets
+            les plus enfouis à chaque claquement de doigts.
+          </p>
           <span class="spikes"></span>
         </button>
-        <button class="keycap" data-tone="402">
-          <span class="key-title">Elliot</span>
-          <span class="key-meta">Pulse abyssal</span>
+        <button class="keycap" data-tone="402" data-sound="selah">
+          <div class="key-header">
+            <p class="key-title">Selah</p>
+            <span class="key-role">La déchireuse de lumière</span>
+          </div>
+          <p class="key-story">
+            Elle lacère les faisceaux laser à mains nues et les tisse en cages suspendues. Les spectateurs y flottent comme
+            des lucioles prisonnières d'une aurore boréale.
+          </p>
           <span class="spikes"></span>
         </button>
-        <button class="keycap" data-tone="180">
-          <span class="key-title">Léonie</span>
-          <span class="key-meta">Velours noir</span>
+        <button class="keycap" data-tone="212" data-sound="bastian">
+          <div class="key-header">
+            <p class="key-title">Bastian</p>
+            <span class="key-role">Le mécano-chimérique</span>
+          </div>
+          <p class="key-story">
+            Dans son torse transparent tournent des engrenages en verre. Il répare les trains fantômes à mains nues et fait
+            accélérer les cœurs avec des clefs à molette bénites.
+          </p>
           <span class="spikes"></span>
         </button>
-        <button class="keycap" data-tone="290">
-          <span class="key-title">Atlas</span>
-          <span class="key-meta">Corde sensible</span>
+        <button class="keycap" data-tone="290" data-sound="lyra">
+          <div class="key-header">
+            <p class="key-title">Lyra</p>
+            <span class="key-role">L'anatomiste des rêves</span>
+          </div>
+          <p class="key-story">
+            Elle découpe vos cauchemars au scalpel holographique et les recoud en lullabies électroniques. On ressort de sa
+            table de marbre en riant nerveusement.
+          </p>
           <span class="spikes"></span>
         </button>
       </div>
@@ -476,6 +558,7 @@
   <script>
     const buttons = document.querySelectorAll('button');
     let audioCtx;
+    const audioBufferCache = {};
 
     function getAudioContext() {
       if (!audioCtx) {
@@ -519,11 +602,56 @@
       osc.stop(now + duration);
     }
 
+    async function loadSample(slug) {
+      if (slug in audioBufferCache) {
+        return audioBufferCache[slug];
+      }
+      const ctx = getAudioContext();
+      if (!ctx) {
+        audioBufferCache[slug] = null;
+        return null;
+      }
+      const extensions = ['.mp3', '.wav', '.ogg'];
+      for (const ext of extensions) {
+        const url = `sounds/${slug}${ext}`;
+        try {
+          const response = await fetch(url);
+          if (!response.ok) continue;
+          const arrayBuffer = await response.arrayBuffer();
+          const buffer = await ctx.decodeAudioData(arrayBuffer);
+          audioBufferCache[slug] = buffer;
+          return buffer;
+        } catch (error) {
+          console.warn(`Impossible de charger ${url}`, error);
+        }
+      }
+      audioBufferCache[slug] = null;
+      return null;
+    }
+
+    async function triggerButtonSound(button) {
+      const slug = button.dataset.sound;
+      const freq = Number(button.dataset.tone) || 240;
+      if (!slug) {
+        playTactileTone(freq);
+        return;
+      }
+      const buffer = await loadSample(slug);
+      if (buffer) {
+        const ctx = getAudioContext();
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(ctx.destination);
+        source.start();
+      } else {
+        playTactileTone(freq);
+      }
+    }
+
     buttons.forEach((btn) => {
       btn.addEventListener('click', () => {
-        const tone = Number(btn.dataset.tone) || 240;
         btn.classList.add('is-pressed');
-        playTactileTone(tone);
+        triggerButtonSound(btn);
         setTimeout(() => btn.classList.remove('is-pressed'), 160);
       });
     });
