@@ -54,19 +54,19 @@ class SpectralAnalyzer {
     }
 
     setupNameButtons() {
-        const nameButtons = document.querySelectorAll('.voice-button');
+        const nameButtons = document.querySelectorAll('.voice-button, .keycap[data-sound]');
         nameButtons.forEach(button => {
             button.addEventListener('click', () => {
                 button.classList.toggle('active');
                 const name = button.getAttribute('data-name');
+                const soundName = button.getAttribute('data-sound');
 
                 if (button.classList.contains('active')) {
                     this.activeNames.add(name);
-                    this.playClickSound();
+                    this.playVoiceSound(soundName || name);
                     this.createConfetti(button);
                 } else {
                     this.activeNames.delete(name);
-                    this.playClickSound();
                 }
 
                 console.log('Noms actifs:', Array.from(this.activeNames));
@@ -74,27 +74,26 @@ class SpectralAnalyzer {
         });
     }
 
-    playClickSound() {
-        // Créer un son simple avec Web Audio API
-        if (!this.audioContext) {
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        }
+    playVoiceSound(name) {
+        // Charger et jouer le fichier audio correspondant
+        const fileName = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-        const oscillator = this.audioContext.createOscillator();
-        const gainNode = this.audioContext.createGain();
+        // Essayer d'abord .wav, puis .opus si ça échoue
+        const audio = new Audio(`sounds/${fileName}.wav`);
+        audio.volume = 0.5;
 
-        oscillator.connect(gainNode);
-        gainNode.connect(this.audioContext.destination);
+        audio.addEventListener('error', () => {
+            // Si .wav échoue, essayer .opus
+            const audioOpus = new Audio(`sounds/${fileName}.opus`);
+            audioOpus.volume = 0.5;
+            audioOpus.play().catch(error => {
+                console.error(`Erreur lors de la lecture du son ${fileName}:`, error);
+            });
+        });
 
-        // Son de clic élégant (deux notes rapides)
-        oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(1200, this.audioContext.currentTime + 0.05);
-
-        gainNode.gain.setValueAtTime(0.15, this.audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
-
-        oscillator.start(this.audioContext.currentTime);
-        oscillator.stop(this.audioContext.currentTime + 0.1);
+        audio.play().catch(error => {
+            console.error(`Erreur lors de la lecture du son ${fileName}:`, error);
+        });
     }
 
     createConfetti(element) {
